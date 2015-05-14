@@ -1,0 +1,45 @@
+/************************************************************************//**
+ * @ingroup sysd
+ *
+ * @file
+ * Header for sysd config_yaml interface.
+ *
+ * Copyright (C) 2015 Hewlett-Packard Development Company, L.P.
+ * All Rights Reserved.
+
+ *    Licensed under the Apache License, Version 2.0 (the "License"); you may
+ *    not use this file except in compliance with the License. You may obtain
+ *    a copy of the License at
+
+ *         http://www.apache.org/licenses/LICENSE-2.0
+
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ *    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ *    License for the specific language governing permissions and limitations
+ *    under the License.
+ *
+ ***************************************************************************/
+#ifndef __SYSD_CFG_YAML__H__
+#define __SYSD_CFG_YAML__H__
+
+/** @ingroup sysd
+ * @{ */
+
+#define HWDESC_FILE_LINK_PATH "@HWDESC_FILE_LINK_PATH@"
+#define HWDESC_FILE_LINK "@HWDESC_FILE_LINK@"
+#define HWDESC_FILES_PATH "@HWDESC_FILES_PATH@"
+
+#define DEVICES_YAML HWDESC_FILE_LINK
+#define PORTS_YAML HWDESC_FILE_LINK
+
+/* Config YAML functions */
+bool sysd_cfg_yaml_init(char *hw_desc_dir);
+inline int sysd_cfg_yaml_get_port_count(void);
+inline YamlPort *sysd_cfg_yaml_get_port_info(int index);
+inline YamlPortInfo *sysd_cfg_yaml_get_port_subsys_info(void);
+bool sysd_cfg_yaml_fru_read(unsigned char *fru_hdr, int hdr_len);
+
+/** @} end of group sysd */
+
+#endif /* __SYSD_CFG_YAML__H__ */

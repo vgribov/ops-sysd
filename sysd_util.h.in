@@ -1,0 +1,60 @@
+/************************************************************************//**
+ * @ingroup sysd
+ *
+ * @file
+ * Header for sysd utility functions.
+ *
+ * Copyright (C) 2015 Hewlett-Packard Development Company, L.P.
+ * All Rights Reserved.
+
+ *    Licensed under the Apache License, Version 2.0 (the "License"); you may
+ *    not use this file except in compliance with the License. You may obtain
+ *    a copy of the License at
+
+ *         http://www.apache.org/licenses/LICENSE-2.0
+
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ *    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ *    License for the specific language governing permissions and limitations
+ *    under the License.
+ *
+ ***************************************************************************/
+
+#ifndef __SYSD_UTIL_H__
+#define __SYSD_UTIL_H__
+
+/** @ingroup sysd
+ * @{ */
+
+#define DAEMONS_TAG "daemons"
+#define HW_HANDLER_TAG "is_hw_handler"
+#define NAME_IN_DAEMON_TABLE "sysd"
+
+#define IMAGE_MANIFEST_FILE_PATH "@MANIFEST_FILE_PATH@"
+
+#define SYSD_MALLOC(buf, len)  		buf = xmalloc(len)
+
+#define MAX_DAEMON_NAME_LEN     128
+
+typedef struct daemon_info {
+    char                name[MAX_DAEMON_NAME_LEN];
+    bool                is_hw_handler;
+    int64_t             cur_hw;
+} daemon_info_t;
+
+extern daemon_info_t    **daemons;
+extern int              num_daemons;
+extern int              num_hw_daemons;
+
+extern struct json      *manifest_info;
+
+int sysd_read_manifest_file(void);
+void sysd_free_manifest_info(void);
+
+int sysd_create_link_to_hwdesc_files(void);
+
+unsigned int calc_crc(unsigned char *buf, int len);
+
+/** @} end of group sysd */
+#endif /* __SYSD_UTIL_H__ */
