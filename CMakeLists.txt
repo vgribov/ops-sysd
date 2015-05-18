@@ -20,14 +20,10 @@ cmake_minimum_required (VERSION 2.8)
 set (SYSD sysd)
 project (${SYSD})
 
-# HALON_TODO: Remove the hard-coded path names here.
-# set (HWDESC_FILE_LINK_PATH /etc/halon/platform)
-# set (HWDESC_FILE_LINK /etc/halon)
-# set (HWDESC_FILES_PATH /etc/halon/hwdesc)
-
-set (HWDESC_FILE_LINK_PATH $ENV{HWDESC_FILE_LINK_PATH})
-set (HWDESC_FILE_LINK $ENV{HWDESC_FILE_LINK})
-set (HWDESC_FILES_PATH $ENV{HWDESC_FILES_PATH})
+set (SYSCONFDIR "/etc" CACHE STRING "Location of system configuration files")
+set (HWDESC_FILE_LINK_PATH ${SYSCONFDIR}/halon)
+set (HWDESC_FILE_LINK ${SYSCONFDIR}/halon/hwdesc)
+set (HWDESC_FILES_PATH ${SYSCONFDIR}/halon/platform)
 
 # Update the platform YAML config file location in sysd_cfgyaml
 configure_file (${PROJECT_SOURCE_DIR}/sysd_cfg_yaml.h.in
