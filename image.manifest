@@ -12,6 +12,9 @@
         "ledd": {
              "is_hw_handler": true
         },
+        "powerd": {
+             "is_hw_handler": true
+        },
         "fand": {
             "is_hw_handler": true
         }
