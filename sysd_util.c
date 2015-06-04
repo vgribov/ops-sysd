@@ -38,6 +38,7 @@
 
 #include <config-yaml.h>
 #include "sysd_cfg_yaml.h"
+#include "sysd.h"
 
 /***********************************************************/
 
@@ -192,6 +193,11 @@ sysd_create_link_to_hwdesc_files(void)
 
     memset(cmd_path, 0, sizeof(cmd_path));
 
+#ifdef PLATFORM_SIMULATION
+    /* For x86/simulation assign the manufacturer and product name */
+    manufacturer = strdup(GENERIC_X86_MANUFACTURER);
+    product_name = strdup(GENERIC_X86_PRODUCT_NAME);
+#else
     /* HALON_TODO: Add other methods to find manuf/prodname.
      * Run dmidecode command (if it exists) to get system info. */
     rc = dmidecode_exists(cmd_path);
@@ -204,6 +210,7 @@ sysd_create_link_to_hwdesc_files(void)
     if ((manufacturer == NULL) || (product_name == NULL)) {
         return -1;
     }
+#endif
 
     VLOG_DBG("manufacturer=%s product_name=%s", manufacturer, product_name);
 

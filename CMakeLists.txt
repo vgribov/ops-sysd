@@ -20,10 +20,16 @@ cmake_minimum_required (VERSION 2.8)
 set (SYSD sysd)
 project (${SYSD})
 
+OPTION( PLATFORM_SIMULATION "Enable platform simulation" OFF )
+
 set (SYSCONFDIR "/etc" CACHE STRING "Location of system configuration files")
 set (HWDESC_FILE_LINK_PATH ${SYSCONFDIR}/halon)
 set (HWDESC_FILE_LINK ${SYSCONFDIR}/halon/hwdesc)
 set (HWDESC_FILES_PATH ${SYSCONFDIR}/halon/platform)
+
+# Update the sysd.h with any compile time flags
+configure_file (${PROJECT_SOURCE_DIR}/sysd.h.in
+                ${PROJECT_BINARY_DIR}/sysd.h)
 
 # Update the platform YAML config file location in sysd_cfgyaml
 configure_file (${PROJECT_SOURCE_DIR}/sysd_cfg_yaml.h.in
@@ -50,7 +56,12 @@ include_directories (${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR}
                      ${OVSCOMMON_INCLUDE_DIRS})
 
 # Source files to build sysd
+if (PLATFORM_SIMULATION)
+set (SOURCES sysd.c sysd_cfg_yaml.c sysd_fru.c sysd_ovsdb_if.c sysd_util.c
+             sysd_stub_x86_fru.c)
+else ()
 set (SOURCES sysd.c sysd_cfg_yaml.c sysd_fru.c sysd_ovsdb_if.c sysd_util.c)
+endif ()
 
 # Rules to build sysd
 add_executable (${SYSD} ${SOURCES})

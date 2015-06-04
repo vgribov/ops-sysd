@@ -114,6 +114,8 @@
 #ifndef __SYSD_H__
 #define __SYSD_H__
 
+#cmakedefine PLATFORM_SIMULATION
+
 #include <stdint.h>
 #include "sysd_fru.h"
 
@@ -126,6 +128,11 @@
 #define SYSD_SUBSYSTEM_TYPE_LINE        "line_card"
 #define SYSD_SUBSYSTEM_TYPE_CHASSIS     "chassis"
 #define SYSD_SUBSYSTEM_TYPE_SYSTEM      "system"
+
+#ifdef PLATFORM_SIMULATION
+#define GENERIC_X86_MANUFACTURER        "Generic-x86"
+#define GENERIC_X86_PRODUCT_NAME        "X86-64"
+#endif
 
 /**
  * Max supported split ports on QSFP ports.
