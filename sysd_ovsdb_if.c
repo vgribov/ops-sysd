@@ -80,6 +80,7 @@ sysd_initial_interface_add(struct ovsdb_idl_txn *txn,
     char                        buf[128];
     struct ovsrec_interface     *ovs_intf = NULL;
     struct smap                 hw_intf_info;
+    char                        **cap_p;
 
     ovs_intf = ovsrec_interface_insert(txn);
 
@@ -106,6 +107,27 @@ sysd_initial_interface_add(struct ovsdb_idl_txn *txn,
                     "%d", intf_ptr->device);
     smap_add_format(&hw_intf_info, INTERFACE_HW_INTF_INFO_MAP_SWITCH_INTF_ID,
                     "%d", intf_ptr->device_port);
+
+    /* Add interface capabilities
+     * Check for known values and add them. If an unknown capability is given,
+     * log (info) it and go ahead and add it.
+    */
+    cap_p = intf_ptr->capabilities;
+
+    while (*cap_p != (char *) NULL) {
+        if ((strcmp(*cap_p, INTERFACE_HW_INTF_INFO_MAP_SPLIT_4) != 0)  &&
+            (strcmp(*cap_p, INTERFACE_HW_INTF_INFO_MAP_ENET1G)  != 0)  &&
+            (strcmp(*cap_p, INTERFACE_HW_INTF_INFO_MAP_ENET10G) != 0)  &&
+            (strcmp(*cap_p, INTERFACE_HW_INTF_INFO_MAP_ENET40G) != 0)) {
+
+            VLOG_INFO("subsystem[%s]:interface[%s] - adding unknown "
+                      "interface capability[%s]",
+                             subsys_ptr->name, intf_ptr->name, *cap_p);
+        }
+
+        smap_add(&hw_intf_info, *cap_p, "true");
+        cap_p++;
+    }
 
     if (subsys_ptr->num_free_macs) {
         memset(buf, 0, sizeof(buf));
