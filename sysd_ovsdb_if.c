@@ -270,7 +270,7 @@ sysd_initial_subsystem_add(struct ovsdb_idl_txn *txn, sysd_subsystem_t *subsys_p
     smap_add_format(&other_info, "max_bond_member_count",
                     "%d", subsys_ptr->intf_cmn_info->max_lag_member_count);
 
-    ovsrec_subsystem_set_other_config(ovs_subsys, &other_info);
+    ovsrec_subsystem_set_other_info(ovs_subsys, &other_info);
     smap_destroy(&other_info);
 
     ovs_intf = SYSD_OVS_PTR_CALLOC(ovsrec_interface *, subsys_ptr->intf_count);
