@@ -31,22 +31,19 @@ set (HWDESC_FILES_PATH ${SYSCONFDIR}/halon/platform)
 configure_file (${PROJECT_SOURCE_DIR}/sysd.h.in
                 ${PROJECT_BINARY_DIR}/sysd.h)
 
-# Update the platform YAML config file location in sysd_cfgyaml
+# Update the platform YAML config file location in sysd_cfg_yaml
 configure_file (${PROJECT_SOURCE_DIR}/sysd_cfg_yaml.h.in
                 ${PROJECT_BINARY_DIR}/sysd_cfg_yaml.h)
 
 set (MANIFEST_FILE_PATH /etc/halon/image.manifest)
 
-# Update the image.manifest file location in sysd_utils
+# Update the image.manifest file location in sysd_util
 configure_file (${PROJECT_SOURCE_DIR}/sysd_util.h.in
                 ${PROJECT_BINARY_DIR}/sysd_util.h)
 
 # Rules to locate needed libraries
 include(FindPkgConfig)
-pkg_check_modules(OPENSSL openssl)
-pkg_check_modules(SYSTEMD systemd)
 pkg_check_modules(ZLIB zlib)
-
 pkg_check_modules(CONFIG_YAML config-yaml)
 pkg_check_modules(HALONUTILS halonutils)
 pkg_check_modules(OVSCOMMON libovscommon)
@@ -67,9 +64,8 @@ endif ()
 add_executable (${SYSD} ${SOURCES})
 
 target_link_libraries (${SYSD} ${HALONUTILS_LIBRARIES} ${CONFIG_YAML_LIBRARIES}
-                       ${OVSCOMMON_LIBRARIES} ${OVSDB_LIBRARIES}
-                       ${OPENSSL_LIBRARIES} ${ZLIB_LIBRARIES}
-                       ${SYSTEMD_LIBRARIES} -lpthread -lrt)
+                       ${OVSCOMMON_LIBRARIES} ${OVSDB_LIBRARIES} ${ZLIB_LIBRARIES}
+                       -lpthread -lrt)
 
 # The default install prefix is /usr. We want to install manifest file at
 # '/etc/halon'. So change the install prefix to '/', and use relative
