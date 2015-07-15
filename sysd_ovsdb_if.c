@@ -291,6 +291,21 @@ sysd_initial_subsystem_add(struct ovsdb_idl_txn *txn, sysd_subsystem_t *subsys_p
 
 } /* sysd_initial_subsystem_add */
 
+/*
+ * This function is used to initialize the default VRF during system bootup.
+ */
+void
+sysd_configure_default_vrf(struct ovsdb_idl_txn *txn,
+                           struct ovsrec_open_vswitch *ovs_row)
+{
+    struct ovsrec_vrf *default_vrf_row = NULL;
+
+    default_vrf_row = ovsrec_vrf_insert(txn);
+    ovsrec_vrf_set_name(default_vrf_row, OVSDB_VRF_DEFAULT_NAME);
+    ovsrec_open_vswitch_set_vrfs(ovs_row, &default_vrf_row, 1);
+
+}/* sysd_configure_default_vrf */
+
 void
 sysd_initial_configure(struct ovsdb_idl_txn *txn)
 {
@@ -314,6 +329,8 @@ sysd_initial_configure(struct ovsdb_idl_txn *txn)
     }
 
     ovsrec_open_vswitch_set_subsystems(ovs_vsw, ovs_subsys_l, num_subsystems);
+
+    sysd_configure_default_vrf(txn, ovs_vsw);
 
     ovs_daemon_l = SYSD_OVS_PTR_CALLOC(ovsrec_daemon *, num_daemons);
     if (ovs_daemon_l == NULL) {
