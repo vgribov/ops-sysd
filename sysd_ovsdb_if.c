@@ -265,6 +265,8 @@ sysd_initial_subsystem_add(struct ovsdb_idl_txn *txn, sysd_subsystem_t *subsys_p
                     "%d", subsys_ptr->intf_cmn_info->number_ports);
     smap_add_format(&other_info, "max_interface_speed",
                     "%d", subsys_ptr->intf_cmn_info->max_port_speed);
+    smap_add_format(&other_info, "max_transmission_unit",
+                    "%d", subsys_ptr->intf_cmn_info->max_transmission_unit);
     smap_add_format(&other_info, "max_bond_count",
                     "%d", subsys_ptr->intf_cmn_info->max_lag_count);
     smap_add_format(&other_info, "max_bond_member_count",
