@@ -44,7 +44,7 @@ sysd_stub_x86_64_eeprom_info(fru_eeprom_t *fru_eeprom)
 
     strncpy(fru_eeprom->country_code, STUB_X86_64_COUNTRY_CODE,
                                        FRU_COUNTRY_CODE_LEN);
-    fru_eeprom->country_code[FRU_COUNTRY_CODE_LEN+1] = '\0';
+    fru_eeprom->country_code[FRU_COUNTRY_CODE_LEN] = '\0';
 
     fru_eeprom->device_version = STUB_X86_64_DEVICE_VERSION;
 
@@ -57,7 +57,7 @@ sysd_stub_x86_64_eeprom_info(fru_eeprom_t *fru_eeprom)
 
     strncpy(fru_eeprom->manufacture_date, STUB_X86_64_MANUFACTURE_DATE,
             FRU_MANUFACTURE_DATE_LEN);
-    fru_eeprom->manufacture_date[FRU_MANUFACTURE_DATE_LEN+1] = '\0';
+    fru_eeprom->manufacture_date[FRU_MANUFACTURE_DATE_LEN] = '\0';
 
     fru_eeprom->manufacturer = strdup(STUB_X86_64_MANUFACTURER);
 

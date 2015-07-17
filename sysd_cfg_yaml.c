@@ -99,21 +99,21 @@ sysd_cfg_yaml_init(char *hw_desc_dir)
 
 } /* sysd_cfg_yaml_init */
 
-inline int
+int
 sysd_cfg_yaml_get_port_count(void)
 {
     return (int) yaml_get_port_count(cfg_yaml_handle, BASE_SUBSYSTEM);
 
 } /* sysd_cfg_yaml_get_port_count */
 
-inline YamlPort *
+YamlPort *
 sysd_cfg_yaml_get_port_info(int index)
 {
     return (YamlPort *) yaml_get_port(cfg_yaml_handle, BASE_SUBSYSTEM, index);
 
 } /* sysd_cfg_yaml_get_port_info */
 
-inline YamlPortInfo *
+YamlPortInfo *
 sysd_cfg_yaml_get_port_subsys_info(void)
 {
     return yaml_get_port_info(cfg_yaml_handle, BASE_SUBSYSTEM);

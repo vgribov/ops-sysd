@@ -195,11 +195,6 @@ int
 sysd_read_fru_eeprom(fru_eeprom_t *fru_eeprom)
 {
     bool            rc;
-    unsigned char   *buf;
-    int             len;
-    uint16_t        total_len;
-    fru_header_t    header;
-
 #ifdef PLATFORM_SIMULATION
     /* Populate stub generic-x86 EEPROM info */
     rc = sysd_stub_x86_64_eeprom_info(fru_eeprom);
@@ -208,6 +203,11 @@ sysd_read_fru_eeprom(fru_eeprom_t *fru_eeprom)
         return -1;
     }
 #else
+    unsigned char   *buf;
+    int             len;
+    uint16_t        total_len;
+    fru_header_t    header;
+
     /* Read header info */
     rc = sysd_cfg_yaml_fru_read((unsigned char *) &header, sizeof(header));
     if (!rc) {

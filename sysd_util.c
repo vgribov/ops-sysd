@@ -51,6 +51,7 @@ VLOG_DEFINE_THIS_MODULE(sysd_util);
 
 struct json *manifest_info = NULL;
 
+#ifndef PLATFORM_SIMULATION
 static int
 dmidecode_exists(char *cmd_path)
 {
@@ -73,6 +74,7 @@ dmidecode_exists(char *cmd_path)
     }
     return -1;
 } /* dmidecode_exists() */
+#endif /* PLATFORM_SIMULATION */
 
 void
 get_sys_cmd_out(char *cmd, char **output)
@@ -115,6 +117,7 @@ get_sys_cmd_out(char *cmd, char **output)
 
 } /* get_sys_cmd_out */
 
+#ifndef PLATFORM_SIMULATION
 static void
 get_manuf_and_prodname(char *cmd_path, char **manufacturer, char **product_name)
 {
@@ -140,6 +143,7 @@ get_manuf_and_prodname(char *cmd_path, char **manufacturer, char **product_name)
     return;
 
 } /* get_manuf_and_prodname() */
+#endif	/* PLATFORM_SIMULATION */
 
 static int
 create_link_to_desc_files(char *manufacturer, char *product_name)

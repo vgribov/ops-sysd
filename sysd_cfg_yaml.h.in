@@ -35,9 +35,9 @@
 
 /* Config YAML functions */
 bool sysd_cfg_yaml_init(char *hw_desc_dir);
-inline int sysd_cfg_yaml_get_port_count(void);
-inline YamlPort *sysd_cfg_yaml_get_port_info(int index);
-inline YamlPortInfo *sysd_cfg_yaml_get_port_subsys_info(void);
+int sysd_cfg_yaml_get_port_count(void);
+YamlPort *sysd_cfg_yaml_get_port_info(int index);
+YamlPortInfo *sysd_cfg_yaml_get_port_subsys_info(void);
 bool sysd_cfg_yaml_fru_read(unsigned char *fru_hdr, int hdr_len);
 
 /** @} end of group sysd */

@@ -20,6 +20,8 @@ cmake_minimum_required (VERSION 2.8)
 set (SYSD sysd)
 project (${SYSD})
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -Wall -Werror")
+
 OPTION( PLATFORM_SIMULATION "Enable platform simulation" OFF )
 
 set (SYSCONFDIR "/etc" CACHE STRING "Location of system configuration files")
