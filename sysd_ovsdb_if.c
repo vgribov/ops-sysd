@@ -303,7 +303,7 @@ sysd_configure_default_vrf(struct ovsdb_idl_txn *txn,
     struct ovsrec_vrf *default_vrf_row = NULL;
 
     default_vrf_row = ovsrec_vrf_insert(txn);
-    ovsrec_vrf_set_name(default_vrf_row, OVSDB_VRF_DEFAULT_NAME);
+    ovsrec_vrf_set_name(default_vrf_row, DEFAULT_VRF_NAME);
     ovsrec_open_vswitch_set_vrfs(ovs_row, &default_vrf_row, 1);
 
 }/* sysd_configure_default_vrf */
