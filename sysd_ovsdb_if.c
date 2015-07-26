@@ -294,6 +294,21 @@ sysd_initial_subsystem_add(struct ovsdb_idl_txn *txn, sysd_subsystem_t *subsys_p
 } /* sysd_initial_subsystem_add */
 
 /*
+ * This function is used to initialize the default bridge during system bootup.
+ */
+void
+sysd_configure_default_bridge(struct ovsdb_idl_txn *txn,
+                              struct ovsrec_open_vswitch *ovs_row)
+{
+    struct ovsrec_bridge *default_bridge_row = NULL;
+
+    default_bridge_row = ovsrec_bridge_insert(txn);
+    ovsrec_bridge_set_name(default_bridge_row, DEFAULT_BRIDGE_NAME);
+    ovsrec_open_vswitch_set_bridges(ovs_row, &default_bridge_row, 1);
+
+}/* sysd_configure_default_bridge */
+
+/*
  * This function is used to initialize the default VRF during system bootup.
  */
 void
@@ -332,6 +347,7 @@ sysd_initial_configure(struct ovsdb_idl_txn *txn)
 
     ovsrec_open_vswitch_set_subsystems(ovs_vsw, ovs_subsys_l, num_subsystems);
 
+    sysd_configure_default_bridge(txn, ovs_vsw);
     sysd_configure_default_vrf(txn, ovs_vsw);
 
     ovs_daemon_l = SYSD_OVS_PTR_CALLOC(ovsrec_daemon *, num_daemons);
