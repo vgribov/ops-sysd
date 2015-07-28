@@ -129,6 +129,15 @@ sysd_initial_interface_add(struct ovsdb_idl_txn *txn,
         cap_p++;
     }
 
+    /* All the interfaces in a subsystem uses the same MAC address.
+     * Copy the subsystem system MAC to interface hw_info:mac_addres.
+     */
+    if (subsys_ptr->system_mac_addr) {
+        memset(buf, 0, sizeof(buf));
+        tmp_p = hc_ether_ulong_long_to_string(buf, subsys_ptr->system_mac_addr);
+        smap_add(&hw_intf_info, INTERFACE_HW_INTF_INFO_MAP_MAC_ADDR, tmp_p);
+    }
+
     ovsrec_interface_set_hw_intf_info(ovs_intf, &hw_intf_info);
     smap_destroy(&hw_intf_info);
 
@@ -220,7 +229,7 @@ sysd_initial_subsystem_add(struct ovsdb_idl_txn *txn, sysd_subsystem_t *subsys_p
 {
     int                         i = 0;
     fru_eeprom_t                *fru = NULL;
-    char                        mac_addr[128];
+    char                        mac_addr[32];
     char                        *tmp_p;
 
     struct smap                 other_info;
@@ -326,7 +335,7 @@ void
 sysd_initial_configure(struct ovsdb_idl_txn *txn)
 {
     int     i = 0;
-    char    mac_addr[128];
+    char    mac_addr[32];
     char    *tmp_p;
     struct ovsrec_daemon **ovs_daemon_l = NULL;
 
