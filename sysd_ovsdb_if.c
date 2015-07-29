@@ -129,15 +129,6 @@ sysd_initial_interface_add(struct ovsdb_idl_txn *txn,
         cap_p++;
     }
 
-    if (subsys_ptr->num_free_macs) {
-        memset(buf, 0, sizeof(buf));
-        tmp_p = hc_ether_ulong_long_to_string(buf, subsys_ptr->nxt_mac_addr);
-        smap_add(&hw_intf_info, INTERFACE_HW_INTF_INFO_MAP_MAC_ADDR, tmp_p);
-
-        subsys_ptr->num_free_macs--;
-        subsys_ptr->nxt_mac_addr++;
-    }
-
     ovsrec_interface_set_hw_intf_info(ovs_intf, &hw_intf_info);
     smap_destroy(&hw_intf_info);
 
@@ -229,6 +220,8 @@ sysd_initial_subsystem_add(struct ovsdb_idl_txn *txn, sysd_subsystem_t *subsys_p
 {
     int                         i = 0;
     fru_eeprom_t                *fru = NULL;
+    char                        mac_addr[128];
+    char                        *tmp_p;
 
     struct smap                 other_info;
     struct ovsrec_subsystem     *ovs_subsys = NULL;
@@ -287,6 +280,12 @@ sysd_initial_subsystem_add(struct ovsdb_idl_txn *txn, sysd_subsystem_t *subsys_p
 
     sysd_set_splittable_port_info(ovs_intf, subsys_ptr);
 
+    /* Save next_mac_address and macs_remaining in subsystem */
+    memset(mac_addr, 0, sizeof(mac_addr));
+    tmp_p = hc_ether_ulong_long_to_string(mac_addr, subsys_ptr->nxt_mac_addr);
+    ovsrec_subsystem_set_next_mac_address(ovs_subsys, tmp_p);
+    ovsrec_subsystem_set_macs_remaining(ovs_subsys, subsys_ptr->num_free_macs);
+
     ovsrec_subsystem_set_interfaces(ovs_subsys, ovs_intf, i);
 
     return ovs_subsys;
@@ -327,14 +326,40 @@ void
 sysd_initial_configure(struct ovsdb_idl_txn *txn)
 {
     int     i = 0;
-
+    char    mac_addr[128];
+    char    *tmp_p;
     struct ovsrec_daemon **ovs_daemon_l = NULL;
 
     struct ovsrec_subsystem **ovs_subsys_l = NULL;
     struct ovsrec_open_vswitch *ovs_vsw = NULL;
 
+    /* Add Open_vSwitch row */
     ovs_vsw = ovsrec_open_vswitch_insert(txn);
 
+    /* Add default bridge and VRF rows */
+    sysd_configure_default_bridge(txn, ovs_vsw);
+    sysd_configure_default_vrf(txn, ovs_vsw);
+
+    /* Assign system wide mgmt i/f MAC address
+     * Set Open_vSwitch:management_mac
+    */
+
+    /* HALON_TODO: Need to update for multiple subsystem
+     * for now, assume that subsystem[0] is the base subsystem and use
+     * the mgmt MAC for the base subsystem as the system wide mgmt MAC.
+    */
+
+    memset(mac_addr, 0, sizeof(mac_addr));
+    tmp_p = hc_ether_ulong_long_to_string(mac_addr, subsystems[0]->mgmt_mac_addr);
+    ovsrec_open_vswitch_set_management_mac(ovs_vsw, tmp_p);
+
+    /* Assign general use MAC */
+    /* HALON_TODO: Using subsystem[0] for now */
+    memset(mac_addr, 0, sizeof(mac_addr));
+    tmp_p = hc_ether_ulong_long_to_string(mac_addr, subsystems[0]->system_mac_addr);
+    ovsrec_open_vswitch_set_system_mac(ovs_vsw, tmp_p);
+
+    /* Add the subsystem info to OVSD */
     ovs_subsys_l = SYSD_OVS_PTR_CALLOC(ovsrec_subsystem *, num_subsystems);
     if (ovs_subsys_l == NULL) {
         VLOG_ERR("Failed to allocate memory for OVS subsystem.");
@@ -347,16 +372,13 @@ sysd_initial_configure(struct ovsdb_idl_txn *txn)
 
     ovsrec_open_vswitch_set_subsystems(ovs_vsw, ovs_subsys_l, num_subsystems);
 
-    sysd_configure_default_bridge(txn, ovs_vsw);
-    sysd_configure_default_vrf(txn, ovs_vsw);
-
+    /* Add the daemon info to the daemon table */
     ovs_daemon_l = SYSD_OVS_PTR_CALLOC(ovsrec_daemon *, num_daemons);
     if (ovs_daemon_l == NULL) {
         VLOG_ERR("Failed to allocate memory for OVS daemon table.");
         return;
     }
 
-    /* Add the daemon info to the daemon table */
     if (num_daemons > 0) {
         for (i = 0; i < num_daemons; i++) {
             ovs_daemon_l[i] = sysd_initial_daemon_add(txn, daemons[i]);

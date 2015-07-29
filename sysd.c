@@ -115,13 +115,27 @@ sysd_get_subsystem_info(void)
         return -1;
     }
 
-    /* Store infromation about BASE subsystem. */
+    /* Store information about BASE subsystem. */
     ptr = subsystems[0];
     strncpy(ptr->name, SYSD_BASE_SUBSYSTEM, MAX_SUBSYSTEM_NAME_LEN);
     ptr->type = SYSD_SUBSYSTEM_TYPE_SYSTEM;
 
     ptr->num_free_macs = ptr->fru_eeprom.num_macs;
     ptr->nxt_mac_addr = hc_char_array_to_ulong_long(ptr->fru_eeprom.base_mac_address, ETH_ALEN);
+
+    if (ptr->num_free_macs > 0) {
+        /* Save first MAC as the mgmt i/f MAC for the system */
+        ptr->mgmt_mac_addr = ptr->nxt_mac_addr;
+        ptr->num_free_macs--;
+        ptr->nxt_mac_addr++;
+    }
+
+    if (ptr->num_free_macs > 0) {
+        /* Save second MAC as the system MAC */
+        ptr->system_mac_addr = ptr->nxt_mac_addr;
+        ptr->num_free_macs--;
+        ptr->nxt_mac_addr++;
+    }
 
     return 0;
 

@@ -160,6 +160,8 @@ typedef struct subsystem {
 
     uint64_t                nxt_mac_addr;       /*!< Next avaliable MAC addr */
     int                     num_free_macs;
+    uint64_t                mgmt_mac_addr;      /*!< MAC addr for mgmt i/f */
+    uint64_t                system_mac_addr;    /*!< MAC addr for system, as a uint64 */
 } sysd_subsystem_t;
 
 extern struct ovsdb_idl  *idl;
