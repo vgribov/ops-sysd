@@ -31,11 +31,15 @@
 #define HW_HANDLER_TAG "is_hw_handler"
 #define NAME_IN_DAEMON_TABLE "sysd"
 
+#define MGMT_INTF_TAG "mgmt_intf"
+#define MGMT_INTF_NAME_TAG "intf"
+
 #define IMAGE_MANIFEST_FILE_PATH "@MANIFEST_FILE_PATH@"
 
-#define SYSD_MALLOC(buf, len)  		buf = xmalloc(len)
+#define SYSD_MALLOC(buf, len)      buf = xmalloc(len)
 
 #define MAX_DAEMON_NAME_LEN     128
+#define MAX_MGMT_INTF_NAME_LEN     128
 
 typedef struct daemon_info {
     char                name[MAX_DAEMON_NAME_LEN];
@@ -46,6 +50,12 @@ typedef struct daemon_info {
 extern daemon_info_t    **daemons;
 extern int              num_daemons;
 extern int              num_hw_daemons;
+
+typedef struct mgmt_intf_info {
+    char                name[MAX_MGMT_INTF_NAME_LEN];
+} mgmt_intf_info_t;
+
+extern mgmt_intf_info_t *mgmt_intf;
 
 extern struct json      *manifest_info;
 

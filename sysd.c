@@ -63,6 +63,9 @@ daemon_info_t **daemons = NULL;
 int num_daemons = 0;
 int num_hw_daemons = 0;
 
+/* Structure to store management info read */
+mgmt_intf_info_t *mgmt_intf = NULL;
+
 static void
 sysd_unixctl_dump(struct unixctl_conn *conn, int argc OVS_UNUSED,
                           const char *argv[] OVS_UNUSED, void *aux OVS_UNUSED)
@@ -247,6 +250,8 @@ sysd_ovsdb_conn_init(char *remote)
     ovsdb_idl_add_column(idl, &ovsrec_daemon_col_is_hw_handler);
     ovsdb_idl_omit_alert(idl, &ovsrec_daemon_col_is_hw_handler);
 
+    /* Management Interface Column*/
+    ovsdb_idl_add_column(idl, &ovsrec_open_vswitch_col_mgmt_intf);
     return;
 
 } /* sysd_ovsdb_conn_init */

@@ -302,6 +302,50 @@ _sysd_process_daemons(struct shash *object) {
     return(0);
 } /*_sysd_process_daemons() */
 
+
+static int
+_sysd_process_mgmt_intf(struct shash *object)
+{
+    const struct shash_node *dnode;
+    struct json *jp;
+    static bool is_mgmt_intf_present = false;
+
+    SHASH_FOR_EACH (dnode, object) {
+        if (strncmp(dnode->name, MGMT_INTF_NAME_TAG, strlen(MGMT_INTF_NAME_TAG)) == 0) {
+            jp = dnode->data;
+            switch (jp->type) {
+                case JSON_STRING:
+                    mgmt_intf = xcalloc(sizeof(mgmt_intf_info_t), 0);
+
+                    strncpy(mgmt_intf->name,jp->u.string,strlen(jp->u.string));
+                    is_mgmt_intf_present = true;
+                    VLOG_DBG("Management Interface read successfully: %s",mgmt_intf->name);
+                    break;
+                default:
+                    VLOG_ERR("Error retreiving management interface name");
+                    break;
+            }
+
+            if (is_mgmt_intf_present == false)
+            {
+                VLOG_ERR("Management interface not present in image.manifest file");
+                return -1;
+            }
+
+            return 0;
+        }
+    }
+
+    if (is_mgmt_intf_present == false)
+    {
+        VLOG_ERR("Management interface not present in image.manifest file");
+        return -1;
+    }
+
+    return(0);
+} /*_sysd_process_mgmt_intf() */
+
+
 int
 sysd_process_json(struct json *json)
 {
@@ -326,6 +370,13 @@ sysd_process_json(struct json *json)
                     if (strncmp(node->name, DAEMONS_TAG, strlen(DAEMONS_TAG))
                                                         == 0) {
                         if (_sysd_process_daemons(json_object(node->data))) {
+                            return (-1);
+                        }
+                    }
+                    else if (strncmp(node->name, MGMT_INTF_TAG, strlen(MGMT_INTF_TAG)) == 0)
+                    {
+                        if (_sysd_process_mgmt_intf(json_object(node->data)))
+                        {
                             return (-1);
                         }
                     }

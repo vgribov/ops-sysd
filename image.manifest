@@ -18,5 +18,8 @@
         "fand": {
             "is_hw_handler": true
         }
+    },
+    "mgmt_intf": {
+        "intf": "eth0"
     }
 }

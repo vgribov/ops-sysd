@@ -338,12 +338,18 @@ sysd_initial_configure(struct ovsdb_idl_txn *txn)
     char    mac_addr[32];
     char    *tmp_p;
     struct ovsrec_daemon **ovs_daemon_l = NULL;
-
     struct ovsrec_subsystem **ovs_subsys_l = NULL;
     struct ovsrec_open_vswitch *ovs_vsw = NULL;
+    struct smap smap = SMAP_INITIALIZER(&smap);
 
     /* Add Open_vSwitch row */
     ovs_vsw = ovsrec_open_vswitch_insert(txn);
+
+    /* Add the interface name to ovsdb */
+    smap_add(&smap, OPEN_VSWITCH_MGMT_INTF_MAP_NAME, mgmt_intf->name);
+
+    ovsrec_open_vswitch_set_mgmt_intf(ovs_vsw, &smap);
+    smap_destroy(&smap);
 
     /* Add default bridge and VRF rows */
     sysd_configure_default_bridge(txn, ovs_vsw);
