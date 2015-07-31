@@ -273,6 +273,8 @@ sysd_initial_subsystem_add(struct ovsdb_idl_txn *txn, sysd_subsystem_t *subsys_p
                     "%d", subsys_ptr->intf_cmn_info->max_lag_count);
     smap_add_format(&other_info, "max_bond_member_count",
                     "%d", subsys_ptr->intf_cmn_info->max_lag_member_count);
+    smap_add_format(&other_info, "l3_port_requires_internal_vlan",
+                    "%d", subsys_ptr->intf_cmn_info->l3_port_requires_internal_vlan);
 
     ovsrec_subsystem_set_other_info(ovs_subsys, &other_info);
     smap_destroy(&other_info);
