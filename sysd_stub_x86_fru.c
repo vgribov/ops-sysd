@@ -23,7 +23,9 @@
  *
  ***************************************************************************/
 
+#include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include <openvswitch/vlog.h>
 
@@ -35,8 +37,22 @@ VLOG_DEFINE_THIS_MODULE(x86_fru);
 /** @ingroup sysd
  * @{ */
 
-uint8_t stub_x86_64_base_mac_address[6] =
-                          { 0x70, 0x72, 0xcf, 0xf5, 0xfa, 0xd6 };
+static void
+base_mac_random_generate(uint8_t *base_mac)
+{
+    /*
+     * Generate a random mac address everytime for vsi
+     * To have some sane values, use rand to generate
+     * only the last 24 bits
+     */
+    srand (time(NULL));
+    base_mac[0] = 0x70;
+    base_mac[1] = 0x72;
+    base_mac[2] = 0xcf;
+    base_mac[3] = rand() & 0xff;
+    base_mac[4] = rand() & 0xff;
+    base_mac[5] = rand() & 0xff;
+}
 
 bool
 sysd_stub_x86_64_eeprom_info(fru_eeprom_t *fru_eeprom)
@@ -52,8 +68,7 @@ sysd_stub_x86_64_eeprom_info(fru_eeprom_t *fru_eeprom)
 
     fru_eeprom->label_revision = strdup(STUB_X86_64_LABEL_VERSION);
 
-    memcpy(fru_eeprom->base_mac_address, stub_x86_64_base_mac_address,
-           FRU_BASE_MAC_ADDRESS_LEN);
+    base_mac_random_generate(fru_eeprom->base_mac_address);
 
     strncpy(fru_eeprom->manufacture_date, STUB_X86_64_MANUFACTURE_DATE,
             FRU_MANUFACTURE_DATE_LEN);
