@@ -25,9 +25,9 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -Wall -Werror")
 OPTION( PLATFORM_SIMULATION "Enable platform simulation" OFF )
 
 set (SYSCONFDIR "/etc" CACHE STRING "Location of system configuration files")
-set (HWDESC_FILE_LINK_PATH ${SYSCONFDIR}/halon)
-set (HWDESC_FILE_LINK ${SYSCONFDIR}/halon/hwdesc)
-set (HWDESC_FILES_PATH ${SYSCONFDIR}/halon/platform)
+set (HWDESC_FILE_LINK_PATH ${SYSCONFDIR}/openswitch)
+set (HWDESC_FILE_LINK ${SYSCONFDIR}/openswitch/hwdesc)
+set (HWDESC_FILES_PATH ${SYSCONFDIR}/openswitch/platform)
 
 # Update the sysd.h with any compile time flags
 configure_file (${PROJECT_SOURCE_DIR}/sysd.h.in
@@ -37,7 +37,7 @@ configure_file (${PROJECT_SOURCE_DIR}/sysd.h.in
 configure_file (${PROJECT_SOURCE_DIR}/sysd_cfg_yaml.h.in
                 ${PROJECT_BINARY_DIR}/sysd_cfg_yaml.h)
 
-set (MANIFEST_FILE_PATH /etc/halon/image.manifest)
+set (MANIFEST_FILE_PATH /etc/openswitch/image.manifest)
 
 # Update the image.manifest file location in sysd_util
 configure_file (${PROJECT_SOURCE_DIR}/sysd_util.h.in
@@ -45,11 +45,11 @@ configure_file (${PROJECT_SOURCE_DIR}/sysd_util.h.in
 
 # Rules to locate needed libraries
 include(FindPkgConfig)
-pkg_check_modules(ZLIB zlib)
-pkg_check_modules(CONFIG_YAML config-yaml)
-pkg_check_modules(HALONUTILS halonutils)
-pkg_check_modules(OVSCOMMON libovscommon)
-pkg_check_modules(OVSDB libovsdb)
+pkg_check_modules(ZLIB REQUIRED zlib)
+pkg_check_modules(CONFIG_YAML REQUIRED ops-config-yaml)
+pkg_check_modules(HALONUTILS REQUIRED opsutils)
+pkg_check_modules(OVSCOMMON REQUIRED libovscommon)
+pkg_check_modules(OVSDB REQUIRED libovsdb)
 
 include_directories (${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR}
                      ${OVSCOMMON_INCLUDE_DIRS})
