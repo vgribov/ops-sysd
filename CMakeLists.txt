@@ -81,4 +81,4 @@ install(TARGETS ${SYSD}
 # HALON_TODO: The image.manifest file should not be located in sysd.
 # This is just temporary parking space until we find it better home.
 install(FILES image.manifest
-        DESTINATION etc/halon)
+        DESTINATION etc/openswitch)
