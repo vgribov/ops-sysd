@@ -39,7 +39,7 @@
 #include <vswitch-idl.h>
 #include <openvswitch/vlog.h>
 
-#include <hc-utils.h>
+#include <ops-utils.h>
 #include <config-yaml.h>
 #include "sysd.h"
 #include "sysd_util.h"
@@ -134,7 +134,7 @@ sysd_initial_interface_add(struct ovsdb_idl_txn *txn,
      */
     if (subsys_ptr->system_mac_addr) {
         memset(buf, 0, sizeof(buf));
-        tmp_p = hc_ether_ulong_long_to_string(buf, subsys_ptr->system_mac_addr);
+        tmp_p = ops_ether_ulong_long_to_string(buf, subsys_ptr->system_mac_addr);
         smap_add(&hw_intf_info, INTERFACE_HW_INTF_INFO_MAP_MAC_ADDR, tmp_p);
     }
 
@@ -293,7 +293,7 @@ sysd_initial_subsystem_add(struct ovsdb_idl_txn *txn, sysd_subsystem_t *subsys_p
 
     /* Save next_mac_address and macs_remaining in subsystem */
     memset(mac_addr, 0, sizeof(mac_addr));
-    tmp_p = hc_ether_ulong_long_to_string(mac_addr, subsys_ptr->nxt_mac_addr);
+    tmp_p = ops_ether_ulong_long_to_string(mac_addr, subsys_ptr->nxt_mac_addr);
     ovsrec_subsystem_set_next_mac_address(ovs_subsys, tmp_p);
     ovsrec_subsystem_set_macs_remaining(ovs_subsys, subsys_ptr->num_free_macs);
 
@@ -367,13 +367,13 @@ sysd_initial_configure(struct ovsdb_idl_txn *txn)
     */
 
     memset(mac_addr, 0, sizeof(mac_addr));
-    tmp_p = hc_ether_ulong_long_to_string(mac_addr, subsystems[0]->mgmt_mac_addr);
+    tmp_p = ops_ether_ulong_long_to_string(mac_addr, subsystems[0]->mgmt_mac_addr);
     ovsrec_open_vswitch_set_management_mac(ovs_vsw, tmp_p);
 
     /* Assign general use MAC */
     /* HALON_TODO: Using subsystem[0] for now */
     memset(mac_addr, 0, sizeof(mac_addr));
-    tmp_p = hc_ether_ulong_long_to_string(mac_addr, subsystems[0]->system_mac_addr);
+    tmp_p = ops_ether_ulong_long_to_string(mac_addr, subsystems[0]->system_mac_addr);
     ovsrec_open_vswitch_set_system_mac(ovs_vsw, tmp_p);
 
     /* Add the subsystem info to OVSD */

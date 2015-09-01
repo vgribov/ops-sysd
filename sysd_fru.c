@@ -31,7 +31,7 @@
 #include <openvswitch/vlog.h>
 #include <util.h>
 
-#include <hc-utils.h>
+#include <ops-utils.h>
 #include <config-yaml.h>
 #include <i2c.h>
 
