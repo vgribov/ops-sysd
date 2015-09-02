@@ -1,0 +1,25 @@
+{
+    "daemons": {
+        "sysd": {
+            "is_hw_handler": true
+        },
+        "pmd": {
+            "is_hw_handler": true
+        },
+        "tempd": {
+             "is_hw_handler": true
+        },
+        "ledd": {
+             "is_hw_handler": true
+        },
+        "powerd": {
+             "is_hw_handler": true
+        },
+        "fand": {
+            "is_hw_handler": true
+        }
+    },
+    "mgmt_intf": {
+        "intf": "mgmt1"
+    }
+}

@@ -40,7 +40,7 @@
 #define STUB_X86_64_ONIE_VERSION        "2014.08.00.05"
 #define STUB_X86_64_PART_NUMBER         "HPX8664"
 #define STUB_X86_64_PLATFORM_NAME       "Generic-x86-64"
-#define STUB_X86_64_PRODUCT_NAME        "HALON"
+#define STUB_X86_64_PRODUCT_NAME        "OpenSwitch"
 #define STUB_X86_64_SERIAL_NUMBER       "X8664001"
 #define STUB_X86_64_SERVICE_TAG         0
 #define STUB_X86_64_VENDOR              "HP Enterprise"

@@ -142,7 +142,7 @@ sysd_initial_interface_add(struct ovsdb_idl_txn *txn,
     smap_destroy(&hw_intf_info);
 
     /*
-     * HALON_TODO:
+     * OPS_TODO:
      * Current schema has in-correct values for interface table.
      * Once we fix all that, need to fix the following code.
      *
@@ -361,7 +361,7 @@ sysd_initial_configure(struct ovsdb_idl_txn *txn)
      * Set Open_vSwitch:management_mac
     */
 
-    /* HALON_TODO: Need to update for multiple subsystem
+    /* OPS_TODO: Need to update for multiple subsystem
      * for now, assume that subsystem[0] is the base subsystem and use
      * the mgmt MAC for the base subsystem as the system wide mgmt MAC.
     */
@@ -371,7 +371,7 @@ sysd_initial_configure(struct ovsdb_idl_txn *txn)
     ovsrec_open_vswitch_set_management_mac(ovs_vsw, tmp_p);
 
     /* Assign general use MAC */
-    /* HALON_TODO: Using subsystem[0] for now */
+    /* OPS_TODO: Using subsystem[0] for now */
     memset(mac_addr, 0, sizeof(mac_addr));
     tmp_p = ops_ether_ulong_long_to_string(mac_addr, subsystems[0]->system_mac_addr);
     ovsrec_open_vswitch_set_system_mac(ovs_vsw, tmp_p);

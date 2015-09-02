@@ -39,4 +39,3 @@ void sysd_wait(void);
 
 /** @} end of group sysd */
 #endif /* __SYSD_OVSDB_IF_H__ */
-

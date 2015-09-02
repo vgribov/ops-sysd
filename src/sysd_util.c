@@ -202,7 +202,7 @@ sysd_create_link_to_hwdesc_files(void)
     manufacturer = strdup(GENERIC_X86_MANUFACTURER);
     product_name = strdup(GENERIC_X86_PRODUCT_NAME);
 #else
-    /* HALON_TODO: Add other methods to find manuf/prodname.
+    /* OPS_TODO: Add other methods to find manuf/prodname.
      * Run dmidecode command (if it exists) to get system info. */
     rc = dmidecode_exists(cmd_path);
     if (rc) {

@@ -156,8 +156,8 @@ sysd_process_eeprom(unsigned char *buf, fru_eeprom_t *fru_eeprom, int len)
                 break;
 
             case FRU_VENDOR_EXTENSION_TYPE:
-                /* HALON_TODO: Currently vendor specific extension TLVs
-                 *             are not supported. Ignore them. */
+                /* OPS_TODO: Currently vendor specific extension TLVs
+                 *           are not supported. Ignore them. */
                 break;
 
             case FRU_CRC_TYPE:

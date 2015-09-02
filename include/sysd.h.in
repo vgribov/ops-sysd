@@ -1,16 +1,16 @@
 /* vim: ai:ts=4:sw=4:expandtab
  */
 /************************************************************************//**
- * @defgroup sysd Halon system daemon
+ * @defgroup sysd OpenSwitch system daemon
  *
- * @brief Halon system daemon (sysd)
+ * @brief OpenSwitch system daemon (sysd)
  *
  * The sysd daemon is responsible for detecting the presense of supported
  * subsystems on the switch platform and populating OVSDB.
  * This deamon's primary responsibilities include:
  *     - process the manifest file to populate platform specific information
  *       into the database.
- *     - parse hardware desciption files for the given OpenHalon platform.
+ *     - parse hardware desciption files for the given OpenSwitch platform.
  *     - detect subsystems and validate against hardware description files.
  *     - populate OVSDB interface table based on detected physical interfaces.
  *     - orchestrate daemon startup for daemons that interact with hardware.
@@ -37,7 +37,7 @@
  *
  * @defgroup sysd_public Public Interface
  * The sysd platform daemon manages the physical subsystems and physical
- * interfaces on the OpenHalon platform.
+ * interfaces on the OpenSwitch platform.
  *
  * @{
  *
@@ -45,7 +45,7 @@
  *
  * Command line options:
  *
- *     sysd: Halon system daemon
+ *     sysd: OpenSwitch system daemon
  *     usage: sysd [OPTIONS] [DATABASE]
  *     where DATABASE is a socket on which ovsdb-server is listening
  *           (default: "unix:/var/run/openvswitch/db.sock").
@@ -119,7 +119,7 @@
 #include <stdint.h>
 #include "sysd_fru.h"
 
-#define DFLT_ASSET_TAG             "Open Halon asset tag"
+#define DFLT_ASSET_TAG             "OpenSwitch asset tag"
 #define BASE_SUBSYSTEM             "base"
 #define SYSD_BASE_SUBSYSTEM        "base"
 
@@ -137,7 +137,7 @@
 /**
  * Max supported split ports on QSFP ports.
  */
-/* HALON_TODO This MACRO should go to a common header file. */
+/* OPS_TODO This MACRO should go to a common header file. */
 #define SYSD_MAX_SPLIT_PORTS      4
 
 #define MAX_SUBSYSTEM_NAME_LEN    512

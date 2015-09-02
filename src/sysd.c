@@ -91,10 +91,10 @@ sysd_get_subsystem_info(void)
 
     sysd_subsystem_t    *ptr;
 
-    /* HALON_TODO: Will need to implement mechanism to locate
-     *             the yaml files for this system and all
-     *             defined subsystems for this system.
-     *             For now, just assume pizza box. */
+    /* OPS_TODO: Will need to implement mechanism to locate
+     *           the hardware description files for this system
+     *           and all defined subsystems for this system.
+     *           For now, just assume pizza box. */
 
     num_subsystems = 1;
 
@@ -183,7 +183,7 @@ sysd_get_interface_info(void)
         }
     }
 
-    /* HALON_TODO: Enhance the code to support multiple subsystems. */
+    /* OPS_TODO: Enhance the code to support multiple subsystems. */
     ptr = subsystems[0];
     ptr->intf_count = intf_count;
     ptr->intf_cmn_info = intf_cmn_info;
@@ -215,7 +215,7 @@ sysd_ovsdb_conn_init(char *remote)
     /* Create connection to database. */
     idl = ovsdb_idl_create(remote, &ovsrec_idl_class, false, true);
     idl_seqno = ovsdb_idl_get_seqno(idl);
-    ovsdb_idl_set_lock(idl, "Halon_sysd");
+    ovsdb_idl_set_lock(idl, "OpenSwitch_sysd");
 
     ovsdb_idl_add_table(idl, &ovsrec_table_open_vswitch);
     ovsdb_idl_add_column(idl, &ovsrec_open_vswitch_col_subsystems);
@@ -259,7 +259,7 @@ sysd_ovsdb_conn_init(char *remote)
 static void
 usage(void)
 {
-    printf("%s: Halon system daemon\n"
+    printf("%s: OpenSwitch system daemon\n"
            "usage: %s [OPTIONS] [DATABASE]\n"
            "where DATABASE is a socket on which ovsdb-server is listening\n"
            "      (default: \"unix:%s/db.sock\").\n",
@@ -340,14 +340,14 @@ parse_options(int argc, char *argv[], char **unixctl_pathp)
 } /* parse_options */
 
 static void
-halon_sysd_exit(struct unixctl_conn *conn, int argc OVS_UNUSED,
+sysd_exit(struct unixctl_conn *conn, int argc OVS_UNUSED,
                 const char *argv[] OVS_UNUSED, void *exiting_)
 {
     bool *exiting = exiting_;
     *exiting = true;
     unixctl_command_reply(conn, NULL);
 
-} /* halon_sysd_exit */
+} /* sysd_exit */
 
 int
 main(int argc, char *argv[])
@@ -382,7 +382,7 @@ main(int argc, char *argv[])
     unixctl_command_register("sysd/dump", "", 0, 0, sysd_unixctl_dump, NULL);
 
     /* Register the ovs-appctl "exit" command for this daemon. */
-    unixctl_command_register("exit", "", 0, 0, halon_sysd_exit, &exiting);
+    unixctl_command_register("exit", "", 0, 0, sysd_exit, &exiting);
 
     sysd_ovsdb_conn_init(ovsdb_sock);
     free(ovsdb_sock);
@@ -402,10 +402,10 @@ main(int argc, char *argv[])
         exit(-1);
     }
 
-    /* HALON_TODO: Need to refactor to not die if h/w desc info
-       is not available. Can do this when adding subsystem support. */
+    /* OPS_TODO: Need to refactor to not die if h/w desc info
+     * is not available. Can do this when adding subsystem support. */
 
-    /* Initialize and parse needed yaml files */
+    /* Initialize and parse needed yaml files. */
     rc = sysd_cfg_yaml_init(g_hw_desc_dir);
     if (!rc) {
         VLOG_ERR("Unable to initialize YAML config files.");

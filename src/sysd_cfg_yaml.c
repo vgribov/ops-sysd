@@ -23,8 +23,8 @@
  *
  ***************************************************************************/
 
-/* HALON_TODO: The current code assumes that the switch is a simple pizza box.
- *             Will need to refactor to support multiple subsytems. */
+/* OPS_TODO: The current code assumes that the switch is a simple pizza box.
+ *           Will need to refactor to support multiple subsytems. */
 
 #include <stdio.h>
 #include <stdlib.h>
