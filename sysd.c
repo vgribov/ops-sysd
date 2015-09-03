@@ -39,7 +39,7 @@
 #include <fatal-signal.h>
 #include <dynamic-string.h>
 
-#include <hc-utils.h>
+#include <ops-utils.h>
 #include <config-yaml.h>
 #include "sysd_cfg_yaml.h"
 #include "sysd.h"
@@ -124,7 +124,7 @@ sysd_get_subsystem_info(void)
     ptr->type = SYSD_SUBSYSTEM_TYPE_SYSTEM;
 
     ptr->num_free_macs = ptr->fru_eeprom.num_macs;
-    ptr->nxt_mac_addr = hc_char_array_to_ulong_long(ptr->fru_eeprom.base_mac_address, ETH_ALEN);
+    ptr->nxt_mac_addr = ops_char_array_to_ulong_long(ptr->fru_eeprom.base_mac_address, ETH_ALEN);
 
     if (ptr->num_free_macs > 0) {
         /* Save first MAC as the mgmt i/f MAC for the system */
