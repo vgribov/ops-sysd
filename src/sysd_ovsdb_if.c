@@ -311,10 +311,38 @@ sysd_configure_default_bridge(struct ovsdb_idl_txn *txn,
                               struct ovsrec_open_vswitch *ovs_row)
 {
     struct ovsrec_bridge *default_bridge_row = NULL;
+    struct ovsrec_port *port = NULL;
+    struct ovsrec_interface *iface = NULL;
+    struct smap hw_intf_info;
 
+    /* Create bridge */
     default_bridge_row = ovsrec_bridge_insert(txn);
     ovsrec_bridge_set_name(default_bridge_row, DEFAULT_BRIDGE_NAME);
     ovsrec_open_vswitch_set_bridges(ovs_row, &default_bridge_row, 1);
+
+    /* For every bridge we will create a bridge port and a bridge
+     * internal interface under it. The bridge internal interface
+     * will be used for internal interfaces such as vlan interfaces
+     */
+
+    /* Create bridge internal interface */
+    iface = ovsrec_interface_insert(txn);
+    ovsrec_interface_set_name(iface, DEFAULT_BRIDGE_NAME);
+    ovsrec_interface_set_type(iface, INTERFACE_TYPE_INTERNAL);
+    smap_init(&hw_intf_info);
+    smap_add(&hw_intf_info, INTERFACE_HW_INTF_INFO_MAP_TYPE, INTERFACE_HW_INTF_INFO_MAP_TYPE_BRIDGE);
+    ovsrec_interface_set_hw_intf_info(iface, &hw_intf_info);
+    smap_destroy(&hw_intf_info);
+
+    /* Create port for bridge */
+    port = ovsrec_port_insert(txn);
+    ovsrec_port_set_name(port, DEFAULT_BRIDGE_NAME);
+
+    /* Add the internal interface to port */
+    ovsrec_port_set_interfaces(port, &iface, 1);
+
+    /* Add port to the bridge */
+    ovsrec_bridge_set_ports(default_bridge_row, &port, 1);
 
 }/* sysd_configure_default_bridge */
 
