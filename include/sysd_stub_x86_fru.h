@@ -35,15 +35,15 @@
 #define STUB_X86_64_DIAG_VERSION        "1.0.0.0"
 #define STUB_X86_64_LABEL_VERSION       "L01"
 #define STUB_X86_64_MANUFACTURE_DATE    "09/01/2015 00:00:01"
-#define STUB_X86_64_MANUFACTURER        "HP Enterprise"
+#define STUB_X86_64_MANUFACTURER        "OpenSwitch"
 #define STUB_X86_64_NUM_MAC             74
 #define STUB_X86_64_ONIE_VERSION        "2014.08.00.05"
-#define STUB_X86_64_PART_NUMBER         "HPX8664"
+#define STUB_X86_64_PART_NUMBER         "OPSX8664"
 #define STUB_X86_64_PLATFORM_NAME       "Generic-x86-64"
 #define STUB_X86_64_PRODUCT_NAME        "OpenSwitch"
 #define STUB_X86_64_SERIAL_NUMBER       "X8664001"
 #define STUB_X86_64_SERVICE_TAG         0
-#define STUB_X86_64_VENDOR              "HP Enterprise"
+#define STUB_X86_64_VENDOR              "OpenSwitch"
 
 extern bool sysd_stub_x86_64_eeprom_info(fru_eeprom_t *fru_eeprom);
 
