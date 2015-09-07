@@ -19,7 +19,7 @@ Apache 2.0 license. For more details refer to [COPYING](COPYING)
 
 What other documents are available?
 -----------------------------------
-For the high level design of ops-foo, refer to [DESIGN.md](DESIGN.md)
+For the high level design of ops-sysd, refer to [DESIGN.md](DESIGN.md)
 For answers to common questions, read [FAQ.md](FAQ.md)
 For what has changed since last release, refer to [NEWS](NEWS)
 For the current list of contributors and maintainers, refer to [AUTHORS.md](AUTHORS.md)
