@@ -21,6 +21,8 @@
  *    License for the specific language governing permissions and limitations
  *    under the License.
  *
+ *  File: sysd_ovsdb_if.c
+ *
  ***************************************************************************/
 
 #include <stdio.h>
@@ -328,7 +330,8 @@ sysd_configure_default_bridge(struct ovsdb_idl_txn *txn,
     /* Create bridge internal interface */
     iface = ovsrec_interface_insert(txn);
     ovsrec_interface_set_name(iface, DEFAULT_BRIDGE_NAME);
-    ovsrec_interface_set_type(iface, INTERFACE_TYPE_INTERNAL);
+    ovsrec_interface_set_type(iface, OVSREC_INTERFACE_TYPE_INTERNAL);
+
     smap_init(&hw_intf_info);
     smap_add(&hw_intf_info, INTERFACE_HW_INTF_INFO_MAP_TYPE, INTERFACE_HW_INTF_INFO_MAP_TYPE_BRIDGE);
     ovsrec_interface_set_hw_intf_info(iface, &hw_intf_info);
