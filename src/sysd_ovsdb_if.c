@@ -88,6 +88,8 @@ sysd_initial_interface_add(struct ovsdb_idl_txn *txn,
 
     ovsrec_interface_set_name(ovs_intf, intf_ptr->name);
 
+    ovsrec_interface_set_type(ovs_intf, OVSREC_INTERFACE_TYPE_SYSTEM);
+
     ovsrec_interface_set_admin_state(ovs_intf, OVSREC_INTERFACE_ADMIN_STATE_DOWN);
 
     smap_init(&hw_intf_info);
