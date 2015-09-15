@@ -335,7 +335,8 @@ sysd_configure_default_bridge(struct ovsdb_idl_txn *txn,
     ovsrec_interface_set_type(iface, OVSREC_INTERFACE_TYPE_INTERNAL);
 
     smap_init(&hw_intf_info);
-    smap_add(&hw_intf_info, INTERFACE_HW_INTF_INFO_MAP_TYPE, INTERFACE_HW_INTF_INFO_MAP_TYPE_BRIDGE);
+    smap_add(&hw_intf_info, INTERFACE_HW_INTF_INFO_MAP_BRIDGE,
+             INTERFACE_HW_INTF_INFO_MAP_BRIDGE_TRUE);
     ovsrec_interface_set_hw_intf_info(iface, &hw_intf_info);
     smap_destroy(&hw_intf_info);
 
