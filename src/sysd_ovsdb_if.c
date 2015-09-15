@@ -381,7 +381,7 @@ sysd_initial_configure(struct ovsdb_idl_txn *txn)
     ovs_vsw = ovsrec_open_vswitch_insert(txn);
 
     /* Add the interface name to ovsdb */
-    smap_add(&smap, OPEN_VSWITCH_MGMT_INTF_MAP_NAME, mgmt_intf->name);
+    smap_add(&smap, SYSTEM_MGMT_INTF_MAP_NAME, mgmt_intf->name);
 
     ovsrec_open_vswitch_set_mgmt_intf(ovs_vsw, &smap);
     smap_destroy(&smap);

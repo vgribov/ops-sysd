@@ -1,8 +1,8 @@
 /************************************************************************//**
- * @ingroup sysd
+ * @ingroup ops-sysd
  *
  * @file
- * Header for sysd config_yaml interface.
+ * Header for ops-sysd config_yaml interface.
  *
  * Copyright (C) 2015 Hewlett-Packard Development Company, L.P.
  * All Rights Reserved.
@@ -23,7 +23,7 @@
 #ifndef __SYSD_CFG_YAML__H__
 #define __SYSD_CFG_YAML__H__
 
-/** @ingroup sysd
+/** @ingroup ops-sysd
  * @{ */
 
 #define HWDESC_FILE_LINK_PATH "@HWDESC_FILE_LINK_PATH@"
@@ -40,6 +40,6 @@ YamlPort *sysd_cfg_yaml_get_port_info(int index);
 YamlPortInfo *sysd_cfg_yaml_get_port_subsys_info(void);
 bool sysd_cfg_yaml_fru_read(unsigned char *fru_hdr, int hdr_len);
 
-/** @} end of group sysd */
+/** @} end of group ops-sysd */
 
 #endif /* __SYSD_CFG_YAML__H__ */

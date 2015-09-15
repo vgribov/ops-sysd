@@ -1,11 +1,11 @@
 /* vim: ai:ts=4:sw=4:expandtab
  */
 /************************************************************************//**
- * @defgroup sysd OpenSwitch system daemon
+ * @defgroup ops-sysd OpenSwitch system daemon
  *
- * @brief OpenSwitch system daemon (sysd)
+ * @brief OpenSwitch system daemon (ops-sysd)
  *
- * The sysd daemon is responsible for detecting the presense of supported
+ * The ops-sysd daemon is responsible for detecting the presense of supported
  * subsystems on the switch platform and populating OVSDB.
  * This deamon's primary responsibilities include:
  *     - process the manifest file to populate platform specific information
@@ -18,7 +18,7 @@
  * @{
  *
  * @file
- * Header for sysd daemon
+ * Header for ops-sysd daemon
  *
  * Copyright (C) 2015 Hewlett-Packard Development Company, L.P.
  * All Rights Reserved.
@@ -36,7 +36,7 @@
  *    under the License.
  *
  * @defgroup sysd_public Public Interface
- * The sysd platform daemon manages the physical subsystems and physical
+ * The ops-sysd platform daemon manages the physical subsystems and physical
  * interfaces on the OpenSwitch platform.
  *
  * @{
@@ -45,22 +45,22 @@
  *
  * Command line options:
  *
- *     sysd: OpenSwitch system daemon
- *     usage: sysd [OPTIONS] [DATABASE]
+ *     ops-sysd: OpenSwitch system daemon
+ *     usage: ops-sysd [OPTIONS] [DATABASE]
  *     where DATABASE is a socket on which ovsdb-server is listening
  *           (default: "unix:/var/run/openvswitch/db.sock").
  *
  *      Daemon options:
  *        --detach                run in background as daemon
  *        --no-chdir              do not chdir to '/'
- *        --pidfile[=FILE]        create pidfile (default: /var/run/openvswitch/sysd.pid)
+ *        --pidfile[=FILE]        create pidfile (default: /var/run/openvswitch/ops-sysd.pid)
  *        --overwrite-pidfile     with --pidfile, start even if already running
  *
  *      Logging options:
  *        -vSPEC, --verbose=SPEC   set logging levels
  *        -v, --verbose            set maximum verbosity level
  *        --log-file[=FILE]        enable logging to specified FILE
- *                                 (default: /var/log/openvswitch/sysd.log)
+ *                                 (default: /var/log/openvswitch/ops-sysd.log)
  *        --syslog-target=HOST:PORT  also send syslog msgs to HOST:PORT via UDP
  *
  *      Other options:
@@ -74,7 +74,7 @@
  *      exit
  *      list-commands
  *      version
- *      sysd/dump      dumps daemons internal data for debugging.
+ *      ops-sysd/dump      dumps daemons internal data for debugging.
  *      vlog/disable-rate-limit [module]...
  *      vlog/enable-rate-limit  [module]...
  *      vlog/list
@@ -84,12 +84,12 @@
  *
  * OVSDB elements usage
  *
- *  The following table rows are CREATED by sysd:
+ *  The following table rows are CREATED by ops-sysd:
  *
  *      Interface row
  *      Subsystem row
  *
- *  The following columns are WRITTEN by sysd:
+ *  The following columns are WRITTEN by ops-sysd:
  *
  *      Open_vSwitch:subsystems
  *      Open_vSwitch:cur_hw
@@ -103,10 +103,10 @@
  *
  * Linux Files:
  *
- *  The following files are written by sysd:
+ *  The following files are written by ops-sysd:
  *
- *      /var/run/openvswitch/sysd.pid: Process ID for the sysd daemon
- *      /var/run/openvswitch/sysd.<pid>.ctl: Control file for ovs-appctl
+ *      /var/run/openvswitch/ops-sysd.pid: Process ID for the ops-sysd daemon
+ *      /var/run/openvswitch/ops-sysd.<pid>.ctl: Control file for ovs-appctl
  *
  ***************************************************************************/
 /** @} end of group sysd_public */
@@ -146,7 +146,7 @@ typedef YamlPortInfo sysd_intf_cmn_info_t;
 typedef YamlPort     sysd_intf_info_t;
 
 /*************************************************************************//**
- * sysd's internal data structure to store per subsytem data.
+ * ops-sysd's internal data structure to store per subsytem data.
  ****************************************************************************/
 typedef struct subsystem {
     char                    name[MAX_SUBSYSTEM_NAME_LEN];
@@ -171,4 +171,4 @@ extern sysd_subsystem_t  **subsystems;
 
 #endif /* __SYSD_H__ */
 
-/** @} end of group sysd */
+/** @} end of group ops-sysd */

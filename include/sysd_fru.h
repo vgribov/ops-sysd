@@ -1,10 +1,10 @@
 /* vim: ai:ts=4:sw=4:expandtab
  */
 /************************************************************************//**
- * @ingroup sysd
+ * @ingroup ops-sysd
  *
  * @file
- * Header for sysd FRU EEPROM access functions.
+ * Header for ops-sysd FRU EEPROM access functions.
  *
  * Copyright (C) 2015 Hewlett-Packard Development Company, L.P.
  * All Rights Reserved.
@@ -26,7 +26,7 @@
 #ifndef __SYSD_FRU_H__
 #define __SYSD_FRU_H__
 
-/** @ingroup sysd
+/** @ingroup ops-sysd
  * @{ */
 
 #include <stdint.h>
@@ -91,5 +91,5 @@ typedef struct fru_tlv {
 
 int sysd_read_fru_eeprom(fru_eeprom_t *fru_eeprom);
 
-/** @} end of group sysd */
+/** @} end of group ops-sysd */
 #endif /* __SYSD_FRU_H__ */
