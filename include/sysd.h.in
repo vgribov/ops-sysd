@@ -91,9 +91,9 @@
  *
  *  The following columns are WRITTEN by sysd:
  *
- *      Open_vSwitch:subsystems
- *      Open_vSwitch:cur_hw
- *      Open_vSwitch:next_hw
+ *      System:subsystems
+ *      System:cur_hw
+ *      System:next_hw
  *
  *      Subsystem:name, asset_tag_number, hw_desc_dir, other_config, interfaces
  *

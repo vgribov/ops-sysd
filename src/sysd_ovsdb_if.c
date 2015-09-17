@@ -312,7 +312,7 @@ sysd_initial_subsystem_add(struct ovsdb_idl_txn *txn, sysd_subsystem_t *subsys_p
  */
 void
 sysd_configure_default_bridge(struct ovsdb_idl_txn *txn,
-                              struct ovsrec_open_vswitch *ovs_row)
+                              struct ovsrec_system *ovs_row)
 {
     struct ovsrec_bridge *default_bridge_row = NULL;
     struct ovsrec_port *port = NULL;
@@ -322,7 +322,7 @@ sysd_configure_default_bridge(struct ovsdb_idl_txn *txn,
     /* Create bridge */
     default_bridge_row = ovsrec_bridge_insert(txn);
     ovsrec_bridge_set_name(default_bridge_row, DEFAULT_BRIDGE_NAME);
-    ovsrec_open_vswitch_set_bridges(ovs_row, &default_bridge_row, 1);
+    ovsrec_system_set_bridges(ovs_row, &default_bridge_row, 1);
 
     /* For every bridge we will create a bridge port and a bridge
      * internal interface under it. The bridge internal interface
@@ -357,13 +357,13 @@ sysd_configure_default_bridge(struct ovsdb_idl_txn *txn,
  */
 void
 sysd_configure_default_vrf(struct ovsdb_idl_txn *txn,
-                           struct ovsrec_open_vswitch *ovs_row)
+                           struct ovsrec_system *ovs_row)
 {
     struct ovsrec_vrf *default_vrf_row = NULL;
 
     default_vrf_row = ovsrec_vrf_insert(txn);
     ovsrec_vrf_set_name(default_vrf_row, DEFAULT_VRF_NAME);
-    ovsrec_open_vswitch_set_vrfs(ovs_row, &default_vrf_row, 1);
+    ovsrec_system_set_vrfs(ovs_row, &default_vrf_row, 1);
 
 }/* sysd_configure_default_vrf */
 
@@ -375,24 +375,24 @@ sysd_initial_configure(struct ovsdb_idl_txn *txn)
     char    *tmp_p;
     struct ovsrec_daemon **ovs_daemon_l = NULL;
     struct ovsrec_subsystem **ovs_subsys_l = NULL;
-    struct ovsrec_open_vswitch *ovs_vsw = NULL;
+    struct ovsrec_system *sys = NULL;
     struct smap smap = SMAP_INITIALIZER(&smap);
 
-    /* Add Open_vSwitch row */
-    ovs_vsw = ovsrec_open_vswitch_insert(txn);
+    /* Add System row */
+    sys = ovsrec_system_insert(txn);
 
     /* Add the interface name to ovsdb */
-    smap_add(&smap, OPEN_VSWITCH_MGMT_INTF_MAP_NAME, mgmt_intf->name);
+    smap_add(&smap, SYSTEM_MGMT_INTF_MAP_NAME, mgmt_intf->name);
 
-    ovsrec_open_vswitch_set_mgmt_intf(ovs_vsw, &smap);
+    ovsrec_system_set_mgmt_intf(sys, &smap);
     smap_destroy(&smap);
 
     /* Add default bridge and VRF rows */
-    sysd_configure_default_bridge(txn, ovs_vsw);
-    sysd_configure_default_vrf(txn, ovs_vsw);
+    sysd_configure_default_bridge(txn, sys);
+    sysd_configure_default_vrf(txn, sys);
 
     /* Assign system wide mgmt i/f MAC address
-     * Set Open_vSwitch:management_mac
+     * Set System:management_mac
     */
 
     /* OPS_TODO: Need to update for multiple subsystem
@@ -402,13 +402,13 @@ sysd_initial_configure(struct ovsdb_idl_txn *txn)
 
     memset(mac_addr, 0, sizeof(mac_addr));
     tmp_p = ops_ether_ulong_long_to_string(mac_addr, subsystems[0]->mgmt_mac_addr);
-    ovsrec_open_vswitch_set_management_mac(ovs_vsw, tmp_p);
+    ovsrec_system_set_management_mac(sys, tmp_p);
 
     /* Assign general use MAC */
     /* OPS_TODO: Using subsystem[0] for now */
     memset(mac_addr, 0, sizeof(mac_addr));
     tmp_p = ops_ether_ulong_long_to_string(mac_addr, subsystems[0]->system_mac_addr);
-    ovsrec_open_vswitch_set_system_mac(ovs_vsw, tmp_p);
+    ovsrec_system_set_system_mac(sys, tmp_p);
 
     /* Add the subsystem info to OVSD */
     ovs_subsys_l = SYSD_OVS_PTR_CALLOC(ovsrec_subsystem *, num_subsystems);
@@ -421,7 +421,7 @@ sysd_initial_configure(struct ovsdb_idl_txn *txn)
         ovs_subsys_l[i] = sysd_initial_subsystem_add(txn, subsystems[i]);
     }
 
-    ovsrec_open_vswitch_set_subsystems(ovs_vsw, ovs_subsys_l, num_subsystems);
+    ovsrec_system_set_subsystems(sys, ovs_subsys_l, num_subsystems);
 
     /* Add the daemon info to the daemon table */
     ovs_daemon_l = SYSD_OVS_PTR_CALLOC(ovsrec_daemon *, num_daemons);
@@ -435,7 +435,7 @@ sysd_initial_configure(struct ovsdb_idl_txn *txn)
             ovs_daemon_l[i] = sysd_initial_daemon_add(txn, daemons[i]);
         }
 
-        ovsrec_open_vswitch_set_daemons(ovs_vsw, ovs_daemon_l, num_daemons);
+        ovsrec_system_set_daemons(sys, ovs_daemon_l, num_daemons);
     }
 
 } /* sysd_initial_configure */
@@ -444,14 +444,14 @@ static void
 sysd_set_hw_done(void)
 {
     struct ovsdb_idl_txn                *txn = NULL;
-    const struct ovsrec_open_vswitch    *ovs_vsw = NULL;
+    const struct ovsrec_system    *sys = NULL;
     enum ovsdb_idl_txn_status           txn_status = TXN_ERROR;
 
     txn = ovsdb_idl_txn_create(idl);
 
-    OVSREC_OPEN_VSWITCH_FOR_EACH(ovs_vsw, idl) {
-        ovsrec_open_vswitch_set_cur_hw(ovs_vsw, (int64_t) 1);
-        ovsrec_open_vswitch_set_next_hw(ovs_vsw, (int64_t) 1);
+    OVSREC_SYSTEM_FOR_EACH(sys, idl) {
+        ovsrec_system_set_cur_hw(sys, (int64_t) 1);
+        ovsrec_system_set_next_hw(sys, (int64_t) 1);
     }
 
     txn_status = ovsdb_idl_txn_commit_block(txn);
@@ -488,9 +488,9 @@ sysd_chk_if_hw_daemons_done(void)
      *
      * Sysd will watch for all of these daemons to register that they
      * have completed their processing and will then update...
-     *      Open_vSwitch:{cur_hw,next_hw} = 1.
+     *      System:{cur_hw,next_hw} = 1.
      *
-     * The configuration daemon waits for sysd to set Open_vSwitch:cur_hw=1
+     * The configuration daemon waits for sysd to set System:cur_hw=1
      * before it tries to push anything into the db, to ensure that all h/w
      * processing is done before any user configuration is pushed.
     */
@@ -538,7 +538,7 @@ sysd_run(void)
     uint32_t                            new_seqno = 0;
     enum ovsdb_idl_txn_status           txn_status = TXN_ERROR;
     struct ovsdb_idl_txn                *txn = NULL;
-    const struct ovsrec_open_vswitch    *cfg = NULL;
+    const struct ovsrec_system    *cfg = NULL;
 
     ovsdb_idl_run(idl);
 
@@ -559,7 +559,7 @@ sysd_run(void)
 
         idl_seqno = ovsdb_idl_get_seqno(idl);
 
-        cfg = ovsrec_open_vswitch_first(idl);
+        cfg = ovsrec_system_first(idl);
 
         if (cfg == NULL) {
             txn = ovsdb_idl_txn_create(idl);

@@ -217,13 +217,13 @@ sysd_ovsdb_conn_init(char *remote)
     idl_seqno = ovsdb_idl_get_seqno(idl);
     ovsdb_idl_set_lock(idl, "OpenSwitch_sysd");
 
-    ovsdb_idl_add_table(idl, &ovsrec_table_open_vswitch);
-    ovsdb_idl_add_column(idl, &ovsrec_open_vswitch_col_subsystems);
-    ovsdb_idl_omit_alert(idl, &ovsrec_open_vswitch_col_subsystems);
-    ovsdb_idl_add_column(idl, &ovsrec_open_vswitch_col_cur_hw);
-    ovsdb_idl_omit_alert(idl, &ovsrec_open_vswitch_col_cur_hw);
-    ovsdb_idl_add_column(idl, &ovsrec_open_vswitch_col_next_hw);
-    ovsdb_idl_omit_alert(idl, &ovsrec_open_vswitch_col_next_hw);
+    ovsdb_idl_add_table(idl, &ovsrec_table_system);
+    ovsdb_idl_add_column(idl, &ovsrec_system_col_subsystems);
+    ovsdb_idl_omit_alert(idl, &ovsrec_system_col_subsystems);
+    ovsdb_idl_add_column(idl, &ovsrec_system_col_cur_hw);
+    ovsdb_idl_omit_alert(idl, &ovsrec_system_col_cur_hw);
+    ovsdb_idl_add_column(idl, &ovsrec_system_col_next_hw);
+    ovsdb_idl_omit_alert(idl, &ovsrec_system_col_next_hw);
 
     ovsdb_idl_add_table(idl, &ovsrec_table_subsystem);
     ovsdb_idl_add_column(idl, &ovsrec_subsystem_col_name);
@@ -253,7 +253,7 @@ sysd_ovsdb_conn_init(char *remote)
     ovsdb_idl_omit_alert(idl, &ovsrec_daemon_col_is_hw_handler);
 
     /* Management Interface Column*/
-    ovsdb_idl_add_column(idl, &ovsrec_open_vswitch_col_mgmt_intf);
+    ovsdb_idl_add_column(idl, &ovsrec_system_col_mgmt_intf);
     return;
 
 } /* sysd_ovsdb_conn_init */

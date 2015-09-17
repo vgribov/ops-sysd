@@ -66,10 +66,10 @@ def ovsdb_start_openswitchDB(sw):
     # Load the newly create DB into ovsdb-server
     sw.cmd("/usr/bin/ovs-appctl -t ovsdb-server ovsdb-server/add-db /var/run/openvswitch/ovsdb.db")
 
-# Wait until open_Vswitch table is visible in the
+# Wait until System table is visible in the
 # ovsdb-server.
 def wait_until_ovsdb_is_up(sw):
-    cmd = OVS_VSCTL + "list open_Vswitch | grep uuid"
+    cmd = OVS_VSCTL + "list System | grep uuid"
     wait_count = 20
     while wait_count > 0:
         out = sw.ovscmd(cmd)
