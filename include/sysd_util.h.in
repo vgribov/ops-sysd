@@ -1,8 +1,8 @@
 /************************************************************************//**
- * @ingroup sysd
+ * @ingroup ops-sysd
  *
  * @file
- * Header for sysd utility functions.
+ * Header for ops-sysd utility functions.
  *
  * Copyright (C) 2015 Hewlett-Packard Development Company, L.P.
  * All Rights Reserved.
@@ -24,12 +24,12 @@
 #ifndef __SYSD_UTIL_H__
 #define __SYSD_UTIL_H__
 
-/** @ingroup sysd
+/** @ingroup ops-sysd
  * @{ */
 
 #define DAEMONS_TAG "daemons"
 #define HW_HANDLER_TAG "is_hw_handler"
-#define NAME_IN_DAEMON_TABLE "sysd"
+#define NAME_IN_DAEMON_TABLE "ops-sysd"
 
 #define MGMT_INTF_TAG "mgmt_intf"
 #define MGMT_INTF_NAME_TAG "intf"
@@ -66,5 +66,5 @@ int sysd_create_link_to_hwdesc_files(void);
 
 unsigned int calc_crc(unsigned char *buf, int len);
 
-/** @} end of group sysd */
+/** @} end of group ops-sysd */
 #endif /* __SYSD_UTIL_H__ */

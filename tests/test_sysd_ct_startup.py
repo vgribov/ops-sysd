@@ -86,11 +86,11 @@ def wait_until_ovsdb_is_up(sw):
 
 # Stop sysd
 def sysd_stop(sw):
-    sw.cmd("/usr/bin/ovs-appctl -t sysd exit")
+    sw.cmd("/usr/bin/ovs-appctl -t ops-sysd exit")
 
 # Start sysd
 def sysd_start(sw):
-    sw.cmd("/bin/systemctl start sysd")
+    sw.cmd("/bin/systemctl start ops-sysd")
 
 # Restart sysd
 def sysd_restart(sw):
@@ -117,7 +117,7 @@ def ovs_vsctl_daemons_list(sw):
     json_out = json.loads(out)['data']
 
     # The output is in the following format
-    # [["uuid","19b943b0-096c-4d7c-bc0c-5b6ac2f83014"],0,true,"pmd"]
+    # [["uuid","19b943b0-096c-4d7c-bc0c-5b6ac2f83014"],0,true,"ops-pmd"]
     for item in json_out:
         daemon_list[item[3]] = {'is_hw_handler' : item[2]}
 

@@ -1,18 +1,18 @@
 {
     "daemons": {
-        "sysd": {
+        "ops-sysd": {
             "is_hw_handler": true
         },
-        "pmd": {
+        "ops-pmd": {
             "is_hw_handler": true
         },
-        "tempd": {
+        "ops-tempd": {
              "is_hw_handler": true
         },
-        "ledd": {
+        "ops-ledd": {
              "is_hw_handler": false
         },
-        "powerd": {
+        "ops-powerd": {
              "is_hw_handler": false
         },
         "cpld_mgr": {

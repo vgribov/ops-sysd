@@ -17,7 +17,7 @@
 
 cmake_minimum_required (VERSION 2.8)
 
-set (SYSD sysd)
+set (SYSD ops-sysd)
 project (${SYSD})
 
 set (SRC_DIR src)
@@ -58,7 +58,7 @@ include_directories (${PROJECT_BINARY_DIR}/${INCL_DIR}
                      ${PROJECT_SOURCE_DIR}/${INCL_DIR}
                      ${OVSCOMMON_INCLUDE_DIRS})
 
-# Source files to build sysd
+# Source files to build ops-sysd
 if (PLATFORM_SIMULATION)
         set (SOURCES ${SRC_DIR}/sysd.c ${SRC_DIR}/sysd_cfg_yaml.c
                      ${SRC_DIR}/sysd_fru.c ${SRC_DIR}/sysd_ovsdb_if.c
@@ -69,7 +69,7 @@ else ()
                      ${SRC_DIR}/sysd_util.c)
 endif ()
 
-# Rules to build sysd
+# Rules to build ops-sysd
 add_executable (${SYSD} ${SOURCES})
 
 target_link_libraries (${SYSD} ${OPSUTILS_LIBRARIES} ${CONFIG_YAML_LIBRARIES}
@@ -81,7 +81,7 @@ target_link_libraries (${SYSD} ${OPSUTILS_LIBRARIES} ${CONFIG_YAML_LIBRARIES}
 # directories in the install command.
 SET(CMAKE_INSTALL_PREFIX "/" CACHE STRING "Prefix prepended to install directories" FORCE)
 
-# Rules to install sysd binary in rootfs
+# Rules to install ops-sysd binary in rootfs
 install(TARGETS ${SYSD}
         RUNTIME DESTINATION usr/bin)
 

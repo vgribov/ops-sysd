@@ -1,7 +1,7 @@
 /* vim: ai:ts=4:sw=4:expandtab
  */
 /************************************************************************//**
- * @ingroup sysd
+ * @ingroup ops-sysd
  *
  * @file
  * Header for Stub X86-64 FRU EEPROM info.
@@ -26,7 +26,7 @@
 #ifndef __SYSD_STUB_X86_FRU_H__
 #define __SYSD_STUB_X86_FRU_H__
 
-/** @ingroup sysd
+/** @ingroup ops-sysd
  * @{ */
 
 /* Generic-x86-64 stub eeprom info */
@@ -47,5 +47,5 @@
 
 extern bool sysd_stub_x86_64_eeprom_info(fru_eeprom_t *fru_eeprom);
 
-/** @} end of group sysd */
+/** @} end of group ops-sysd */
 #endif /* __SYSD_STUB_X86_FRU_H__ */

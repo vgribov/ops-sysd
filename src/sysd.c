@@ -1,10 +1,10 @@
 /* vim: ai:ts=4:sw=4:expandtab
  */
 /************************************************************************//**
- * @ingroup sysd
+ * @ingroup ops-sysd
  *
  * @file
- * Source for sysd daemon.
+ * Source for ops-sysd daemon.
  *
  * Copyright (C) 2015 Hewlett-Packard Development Company, L.P.
  * All Rights Reserved.
@@ -46,9 +46,9 @@
 #include "sysd_util.h"
 #include "sysd_ovsdb_if.h"
 
-VLOG_DEFINE_THIS_MODULE(sysd);
+VLOG_DEFINE_THIS_MODULE(ops_sysd);
 
-/** @ingroup sysd
+/** @ingroup ops-sysd
  * @{ */
 
 /* OVSDB IDL used to obtain configuration. */
@@ -215,7 +215,7 @@ sysd_ovsdb_conn_init(char *remote)
     /* Create connection to database. */
     idl = ovsdb_idl_create(remote, &ovsrec_idl_class, false, true);
     idl_seqno = ovsdb_idl_get_seqno(idl);
-    ovsdb_idl_set_lock(idl, "OpenSwitch_sysd");
+    ovsdb_idl_set_lock(idl, "ops_sysd");
 
     ovsdb_idl_add_table(idl, &ovsrec_table_system);
     ovsdb_idl_add_column(idl, &ovsrec_system_col_subsystems);
@@ -381,7 +381,7 @@ main(int argc, char *argv[])
     }
 
     /* Register ovs-appctl commands for this daemon. */
-    unixctl_command_register("sysd/dump", "", 0, 0, sysd_unixctl_dump, NULL);
+    unixctl_command_register("ops-sysd/dump", "", 0, 0, sysd_unixctl_dump, NULL);
 
     /* Register the ovs-appctl "exit" command for this daemon. */
     unixctl_command_register("exit", "", 0, 0, sysd_exit, &exiting);
@@ -442,4 +442,4 @@ main(int argc, char *argv[])
     return 0;
 
 } /* main */
-/** @} end of group sysd */
+/** @} end of group ops-sysd */

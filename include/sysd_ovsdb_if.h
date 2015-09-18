@@ -1,10 +1,10 @@
 /* vim: ai:ts=4:sw=4
  */
 /************************************************************************//**
- * @ingroup sysd
+ * @ingroup ops-sysd
  *
  * @file
- * Header for sysd OVSDB access functions.
+ * Header for ops-sysd OVSDB access functions.
  *
  * Copyright (C) 2015 Hewlett-Packard Development Company, L.P.
  * All Rights Reserved.
@@ -26,7 +26,7 @@
 #ifndef __SYSD_OVSDB_IF_H__
 #define __SYSD_OVSDB_IF_H__
 
-/** @ingroup sysd
+/** @ingroup ops-sysd
  * @{ */
 
 #define SYSD_MAC_FORMAT(a)	a[0], a[1], a[2], a[3], a[4], a[5]
@@ -37,5 +37,5 @@
 void sysd_run(void);
 void sysd_wait(void);
 
-/** @} end of group sysd */
+/** @} end of group ops-sysd */
 #endif /* __SYSD_OVSDB_IF_H__ */
