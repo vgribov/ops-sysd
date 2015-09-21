@@ -222,6 +222,9 @@ sysd_ovsdb_conn_init(char *remote)
     ovsdb_idl_omit_alert(idl, &ovsrec_system_col_cur_hw);
     ovsdb_idl_add_column(idl, &ovsrec_system_col_next_hw);
     ovsdb_idl_omit_alert(idl, &ovsrec_system_col_next_hw);
+    /* Add column for the Software version */
+    ovsdb_idl_add_column(idl, &ovsrec_system_col_switch_version);
+    ovsdb_idl_omit_alert(idl, &ovsrec_system_col_switch_version);
 
     ovsdb_idl_add_table(idl, &ovsrec_table_subsystem);
     ovsdb_idl_add_column(idl, &ovsrec_subsystem_col_name);

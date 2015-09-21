@@ -34,6 +34,9 @@
 #define MGMT_INTF_NAME_TAG "intf"
 
 #define IMAGE_MANIFEST_FILE_PATH "@MANIFEST_FILE_PATH@"
+#define OS_RELEASE_FILE_PATH "@OS_RELEASE_FILE_PATH@"
+#define OS_RELEASE_BUILD_NAME "BUILD_ID"
+#define OS_RELEASE_VERSION_NAME "VERSION_ID"
 
 #define SYSD_MALLOC(buf, len)      buf = xmalloc(len)
 
