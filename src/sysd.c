@@ -242,6 +242,8 @@ sysd_ovsdb_conn_init(char *remote)
     ovsdb_idl_omit_alert(idl, &ovsrec_interface_col_hw_intf_info);
     ovsdb_idl_add_column(idl, &ovsrec_interface_col_type);
     ovsdb_idl_omit_alert(idl, &ovsrec_interface_col_type);
+    ovsdb_idl_add_column(idl, &ovsrec_interface_col_user_config);
+    ovsdb_idl_omit_alert(idl, &ovsrec_interface_col_user_config);
 
     /* Daemon Table */
     ovsdb_idl_add_table(idl, &ovsrec_table_daemon);

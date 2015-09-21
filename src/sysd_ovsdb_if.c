@@ -314,16 +314,21 @@ sysd_configure_default_bridge(struct ovsdb_idl_txn *txn,
     struct ovsrec_bridge *default_bridge_row = NULL;
     struct ovsrec_port *port = NULL;
     struct ovsrec_interface *iface = NULL;
-    struct smap hw_intf_info;
+    struct smap hw_intf_info, user_config;
 
     /* Create bridge */
     default_bridge_row = ovsrec_bridge_insert(txn);
     ovsrec_bridge_set_name(default_bridge_row, DEFAULT_BRIDGE_NAME);
     ovsrec_system_set_bridges(ovs_row, &default_bridge_row, 1);
 
-    /* For every bridge we will create a bridge port and a bridge
+    /*
+     * For every bridge we will create a bridge port and a bridge
      * internal interface under it. The bridge internal interface
-     * will be used for internal interfaces such as vlan interfaces
+     * will be used for internal interfaces such as vlan interfaces.
+     * For vlan interfaces, all vlan tagged frames for vlan interfaces
+     * will be sent up to bridge interface.
+     * bridge interface will distribute them to the appropriate vlan
+     * interfaces which will be created on top of the bridge interface.
      */
 
     /* Create bridge internal interface */
@@ -336,6 +341,18 @@ sysd_configure_default_bridge(struct ovsdb_idl_txn *txn,
              INTERFACE_HW_INTF_INFO_MAP_BRIDGE_TRUE);
     ovsrec_interface_set_hw_intf_info(iface, &hw_intf_info);
     smap_destroy(&hw_intf_info);
+
+    /*
+     * bridge interface is used internally. Essentially
+     * we do not expect user to configure this interface.
+     * We will set the 'admin' to up as we create it.
+     */
+    smap_init(&user_config);
+    smap_add(&user_config, INTERFACE_USER_CONFIG_MAP_ADMIN,
+             OVSREC_INTERFACE_USER_CONFIG_ADMIN_UP);
+
+    ovsrec_interface_set_user_config(iface, &user_config);
+    smap_destroy(&user_config);
 
     /* Create port for bridge */
     port = ovsrec_port_insert(txn);
