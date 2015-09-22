@@ -381,6 +381,60 @@ sysd_configure_default_vrf(struct ovsdb_idl_txn *txn,
 
 }/* sysd_configure_default_vrf */
 
+/* Function to update the switch version of the OVSDB from the Release file*/
+static void
+sysd_update_switch_version(const struct ovsrec_system *cfg)
+{
+    FILE   *os_version = NULL;
+    char   *file_line = NULL;
+    char   file_var_name[64] = "";
+    char   file_var_value[64] = "";
+    char   build_id_value[32] = "";
+    char   version_id_value[32] = "";
+    size_t line_len;
+
+    /* Open os-release file with the os version information */
+    os_version = fopen(OS_RELEASE_FILE_PATH, "r");
+    if (NULL == os_version) {
+        VLOG_ERR("File %s was not found", OS_RELEASE_FILE_PATH);
+        return;
+    }
+
+    /* Scanning file for variables */
+    while (getline(&file_line, &line_len, os_version) != -1) {
+        sscanf(file_line, "%[^=]=%s", file_var_name, file_var_value);
+
+        /* Version ID value*/
+        if (strcmp(file_var_name, OS_RELEASE_VERSION_NAME) == 0) {
+            strcpy(version_id_value, file_var_value);
+        }
+
+        /* Build ID value*/
+        if (strcmp(file_var_name, OS_RELEASE_BUILD_NAME) == 0) {
+            strcpy(build_id_value, file_var_value);
+        }
+    }
+    fclose(os_version);
+
+    /* Cleaning the variable where the switch version will be save */
+    memset(file_var_value, 0, sizeof(char) * 64);
+
+    /* Building the version string */
+    strcat(file_var_value, version_id_value);
+    strcat(file_var_value, " (Build: ");
+    strcat(file_var_value, build_id_value);
+    strcat(file_var_value, ")");
+
+    /* Check if version id and build id was found*/
+    if ( (strlen(build_id_value) != 0) && (strlen(version_id_value) != 0) ) {
+        ovsrec_system_set_switch_version(cfg, file_var_value);
+    } else {
+        VLOG_ERR("%s or %s was not found on %s", OS_RELEASE_VERSION_NAME, OS_RELEASE_BUILD_NAME, OS_RELEASE_FILE_PATH);
+        return;
+    }
+
+} /* sysd_update_switch_version */
+
 void
 sysd_initial_configure(struct ovsdb_idl_txn *txn)
 {
@@ -451,6 +505,9 @@ sysd_initial_configure(struct ovsdb_idl_txn *txn)
 
         ovsrec_system_set_daemons(sys, ovs_daemon_l, num_daemons);
     }
+
+    /* Update the switch version for the new config */
+    sysd_update_switch_version(sys);
 
 } /* sysd_initial_configure */
 
@@ -553,7 +610,6 @@ sysd_run(void)
     enum ovsdb_idl_txn_status           txn_status = TXN_ERROR;
     struct ovsdb_idl_txn                *txn = NULL;
     const struct ovsrec_system    *cfg = NULL;
-
     ovsdb_idl_run(idl);
 
     if (ovsdb_idl_is_lock_contended(idl)) {
@@ -585,8 +641,13 @@ sysd_run(void)
                 VLOG_ERR("Failed to commit the transaction. rc = %u", txn_status);
             }
             ovsdb_idl_txn_destroy(txn);
-        } else if (!hw_init_done_set) {
-            sysd_chk_if_hw_daemons_done();
+        } else {
+            /* Static function to read the os-release function */
+            sysd_update_switch_version(cfg);
+
+            if (!hw_init_done_set) {
+                sysd_chk_if_hw_daemons_done();
+            }
         }
     }
 
