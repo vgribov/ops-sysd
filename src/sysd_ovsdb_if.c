@@ -385,7 +385,7 @@ sysd_configure_default_vrf(struct ovsdb_idl_txn *txn,
 static void
 sysd_update_switch_version(const struct ovsrec_system *cfg)
 {
-    FILE   *os_version = NULL;
+    FILE   *os_ver_fp = NULL;
     char   *file_line = NULL;
     char   file_var_name[64] = "";
     char   file_var_value[64] = "";
@@ -394,14 +394,14 @@ sysd_update_switch_version(const struct ovsrec_system *cfg)
     size_t line_len;
 
     /* Open os-release file with the os version information */
-    os_version = fopen(OS_RELEASE_FILE_PATH, "r");
-    if (NULL == os_version) {
-        VLOG_ERR("File %s was not found", OS_RELEASE_FILE_PATH);
+    os_ver_fp = fopen(OS_RELEASE_FILE_PATH, "r");
+    if (NULL == os_ver_fp) {
+        VLOG_ERR("Unable to find system OS release. File %s was not found", OS_RELEASE_FILE_PATH);
         return;
     }
 
     /* Scanning file for variables */
-    while (getline(&file_line, &line_len, os_version) != -1) {
+    while (getline(&file_line, &line_len, os_ver_fp) != -1) {
         sscanf(file_line, "%[^=]=%s", file_var_name, file_var_value);
 
         /* Version ID value*/
@@ -414,19 +414,17 @@ sysd_update_switch_version(const struct ovsrec_system *cfg)
             strcpy(build_id_value, file_var_value);
         }
     }
-    fclose(os_version);
-
-    /* Cleaning the variable where the switch version will be save */
-    memset(file_var_value, 0, sizeof(char) * 64);
-
-    /* Building the version string */
-    strcat(file_var_value, version_id_value);
-    strcat(file_var_value, " (Build: ");
-    strcat(file_var_value, build_id_value);
-    strcat(file_var_value, ")");
+    fclose(os_ver_fp);
 
     /* Check if version id and build id was found*/
     if ( (strlen(build_id_value) != 0) && (strlen(version_id_value) != 0) ) {
+
+        /* Cleaning the variable where the switch version will be save */
+        memset(file_var_value, 0, sizeof(char) * 64);
+
+        /* Building the version string */
+        snprintf(file_var_value, 64,"%s (Build: %s)", version_id_value, build_id_value);
+
         ovsrec_system_set_switch_version(cfg, file_var_value);
     } else {
         VLOG_ERR("%s or %s was not found on %s", OS_RELEASE_VERSION_NAME, OS_RELEASE_BUILD_NAME, OS_RELEASE_FILE_PATH);
