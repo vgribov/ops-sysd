@@ -16,13 +16,13 @@ sysd reads the `image.manifest` file and pushes the daemon information into the 
 The hardware daemon information from the `image.manifest` file is written to the daemon table. The **name**, **cur_hw**, and **is_hw_handler** columns are set by sysd. The **cur_hw** column is initialized to zero and hardware daemons set **cur_hw** to one when installation is complete.
 
 ### OCP FRU EEPROM
-OpenSwitch supports [Open Compute Project (OCP)](http://www.opencompute.org/projects/networking/) compliant switch platforms. OCP compliant platforms include a FRU EEPROM with defined content and format. Using the [config-yaml library](http:/www.openswitch.net/ops-config-yaml/README.md), sysd reads the FRU EEPROM content and pushes the information to the base subsystem **other_info** column in the subsystem table.
+OpenSwitch supports [Open Compute Project (OCP)](http://www.opencompute.org/projects/networking/) compliant switch platforms. OCP compliant platforms include a FRU EEPROM with defined content and format. Using the [config-yaml library](http://git.openswitch.net/cgit/openswitch/ops-config-yaml/tree/README.md), sysd reads the FRU EEPROM content and pushes the information to the base subsystem **other_info** column in the subsystem table.
 
 ### Link to hardware description files
 sysd creates a symbolic link at `/etc/openswitch/hwdesc` to the directory containing the hardware description files. The build process passes the correct directory location to sysd for the platform specified as the build target.
 
 ### System information
-sysd manages the system table columns **cur_hw** and **next_hw**. These fields are initially set to zero. sysd monitors the daemon table rows for the hardware daemons (as specified in the `image.manifest` file) and looks to see when all of the daemons have marked their daemon table row **cur_hw** column to one, indicating they have completed their hardware initialization processing. Once all hardware daemons have completed their initialization, sysd sets both **cur_hw** and **next_hw** to a value of one. This informs [Configuration Daemon (cfgd)](http://www.openswitch.net/ops-cfgd/DESIGN.md) that all hardware initialization is complete and it may proceed to push any saved user configuration into the OpenSwitch database.
+sysd manages the system table columns **cur_hw** and **next_hw**. These fields are initially set to zero. sysd monitors the daemon table rows for the hardware daemons (as specified in the `image.manifest` file) and looks to see when all of the daemons have marked their daemon table row **cur_hw** column to one, indicating they have completed their hardware initialization processing. Once all hardware daemons have completed their initialization, sysd sets both **cur_hw** and **next_hw** to a value of one. This informs [Configuration Daemon (cfgd)](http://www.openswitch.net/documents/dev/ops-cfgd/DESIGN) that all hardware initialization is complete and it may proceed to push any saved user configuration into the OpenSwitch database.
 
 ### Subsystem information
 sysd reads the hardware description file content and extracts subsystem specific information. The **subsystem:other_info** column is populated with the FRU EEPROM information (mentioned above), **interface_count**, **max_interface_speed**, **max_transimission_unit**, **max_bond_count**, **max_bond_member_count**, and **l3_port_requires_interval_vlan**. sysd also sets the values for the interface table pointers in the **interfaces** column and the following subsystem columns:
@@ -33,7 +33,7 @@ sysd reads the hardware description file content and extracts subsystem specific
 - macs_remaining
 
 ### Interface information
-sysd reads the hardware description file content and extracts the interface specific information. A row is added for each interface. Please see [Interfaces](http:/www.openswitch.net/ops/docs/interfaces_design.md) for further details, including a discussion on split interfaces.
+sysd reads the hardware description file content and extracts the interface specific information. A row is added for each interface. Please see [Interfaces](http:/www.openswitch.net/documents/dev/interfaces_design) for further details, including a discussion on split interfaces.
 
 The following columns are updated in each interface row:
 - names
@@ -247,5 +247,5 @@ The **mgmt_intf_info_t** data structure stores the information for the managemen
 
 ## References
 * [Open Compute Project (OCP)](http://www.opencompute.org/projects/networking/)
-* [config-yaml library](http:/www.openswitch.net/ops-config-yaml/README.md)
-* [Configuration Daemon (cfgd)](http://www.openswitch.net/ops-cfgd/DESIGN.md)
+* [config-yaml library](http://git.openswitch.net/cgit/openswitch/ops-config-yaml/tree/README.md)
+* [Configuration Daemon (cfgd)](http://www.openswitch.net/documents/dev/ops-cfgd/DESIGN)
