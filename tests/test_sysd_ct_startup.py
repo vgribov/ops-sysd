@@ -49,7 +49,7 @@ def short_sleep(tm=.5):
 # Also remove the DB file from the file system.
 def ovsdb_stop_openswitchDB(sw):
     # Remove the database from the ovsdb-server.
-    sw.cmd("/usr/bin/ovs-appctl -t ovsdb-server ovsdb-server/remove-db OpenHalon")
+    sw.cmd("/usr/bin/ovs-appctl -t ovsdb-server ovsdb-server/remove-db OpenSwitch")
 
     # Remove the DB file from the file system.
     sw.cmd("/bin/rm -f /var/run/openvswitch/ovsdb.db")
