@@ -34,7 +34,7 @@
 #include <shash.h>
 #include <poll-loop.h>
 #include <ovsdb-idl.h>
-#include <openhalon-idl.h>
+#include <openswitch-idl.h>
 #include <vswitch-idl.h>
 #include <openvswitch/vlog.h>
 
