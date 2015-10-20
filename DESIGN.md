@@ -1,9 +1,6 @@
 # High level design of ops-sysd
 The ops-sysd repository contains the source code for the OpenSwitch System Daemon (sysd).
 
-## Contents
-[toc]
-
 ## Responsibilities
 sysd is a platform daemon whose primary responsibility is to locate platform specific information and push this information into the OpenSwitch database. sysd starts at boot time along with all of the other OpenSwitch daemons,   locates all of the requisite information, pushes the information to the OpenSwitch database, and then waits for all of the hardware daemons to complete their intialization. At this point, sysd indicates that hardware initialization is complete (through an indicator in the database) and waits in an OVS IDL loop for `appctl` commands.
 
