@@ -280,20 +280,20 @@ sysd_initial_subsystem_add(struct ovsdb_idl_txn *txn, sysd_subsystem_t *subsys_p
 
     smap_add(&other_info, "country_code", fru->country_code);
     smap_add_format(&other_info, "device_version", "%c", fru->device_version);
-    smap_add(&other_info, "diag_version", fru->diag_version);
-    smap_add(&other_info, "label_revision", fru->label_revision);
+    smap_add(&other_info, "diag_version", fru->diag_version ? : "");
+    smap_add(&other_info, "label_revision", fru->label_revision ? : "");
     smap_add_format(&other_info, "base_mac_address",
                     "%02x:%02x:%02x:%02x:%02x:%02x",
                     SYSD_MAC_FORMAT(fru->base_mac_address));
     smap_add_format(&other_info, "number_of_macs", "%d", fru->num_macs);
-    smap_add(&other_info, "manufacturer", fru->manufacturer);
-    smap_add(&other_info, "manufacture_date", fru->manufacture_date);
-    smap_add(&other_info, "onie_version", fru->onie_version);
-    smap_add(&other_info, "part_number", fru->part_number);
-    smap_add(&other_info, "Product Name", fru->product_name);
-    smap_add(&other_info, "platform_name", fru->platform_name);
-    smap_add(&other_info, "serial_number", fru->serial_number);
-    smap_add(&other_info, "vendor", fru->vendor);
+    smap_add(&other_info, "manufacturer", fru->manufacturer ? : "");
+    smap_add(&other_info, "manufacture_date", fru->manufacture_date ? : "");
+    smap_add(&other_info, "onie_version", fru->onie_version ? : "");
+    smap_add(&other_info, "part_number", fru->part_number ? : "");
+    smap_add(&other_info, "Product Name", fru->product_name ? : "");
+    smap_add(&other_info, "platform_name", fru->platform_name ? : "");
+    smap_add(&other_info, "serial_number", fru->serial_number ? : "");
+    smap_add(&other_info, "vendor", fru->vendor ? : "");
 
     smap_add_format(&other_info, "interface_count",
                     "%d", subsys_ptr->intf_cmn_info->number_ports);
