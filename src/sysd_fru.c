@@ -36,9 +36,6 @@
 #include "sysd_fru.h"
 #include "sysd_cfg_yaml.h"
 #include "sysd.h"
-#ifdef PLATFORM_SIMULATION
-#include "sysd_stub_x86_fru.h"
-#endif
 
 VLOG_DEFINE_THIS_MODULE(fru);
 
@@ -192,18 +189,21 @@ int
 sysd_read_fru_eeprom(fru_eeprom_t *fru_eeprom)
 {
     bool            rc;
-#ifdef PLATFORM_SIMULATION
+#ifdef USE_SW_FRU
     /* Populate stub generic-x86 EEPROM info */
-    rc = sysd_stub_x86_64_eeprom_info(fru_eeprom);
-    if (!rc) {
-        VLOG_ERR("Error stubbing generic x86 FRU EEPROM info");
+    rc = sysd_cfg_yaml_get_fru_info(fru_eeprom);
+    if (0 > rc) {
+        VLOG_ERR("Error getting yaml fru info. rc = %d.", rc);
         return -1;
     }
+    VLOG_INFO("Retrieved fru info from YAML");
 #else
     unsigned char   *buf;
     int             len;
     uint16_t        total_len;
     fru_header_t    header;
+
+    VLOG_INFO("Getting fru info from EEPROM");
 
     /* Read header info */
     rc = sysd_cfg_yaml_fru_read((unsigned char *) &header, sizeof(header));

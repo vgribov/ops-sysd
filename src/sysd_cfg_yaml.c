@@ -32,6 +32,7 @@
 #include <config-yaml.h>
 #include "sysd.h"
 #include "sysd_cfg_yaml.h"
+#include "string.h"
 
 VLOG_DEFINE_THIS_MODULE(cfg_yaml);
 
@@ -81,12 +82,19 @@ sysd_cfg_yaml_init(char *hw_desc_dir)
         return (false);
     }
 
+#ifdef USE_SW_FRU
+    rc = yaml_parse_fru(cfg_yaml_handle, BASE_SUBSYSTEM);
+    if (0 > rc) {
+        VLOG_ERR("Failed to parse fru yaml config file");
+        return (false);
+    }
+#endif
+
     rc = yaml_init_devices(cfg_yaml_handle, BASE_SUBSYSTEM);
     if (0 > rc) {
         VLOG_ERR("Failed to intialize devices");
         return (false);
     }
-
     fru_dev = yaml_find_device(cfg_yaml_handle, BASE_SUBSYSTEM, FRU_EEPROM_NAME);
     if (fru_dev == (YamlDevice *)NULL) {
         VLOG_ERR("unable to find device %s in YAML description.", FRU_EEPROM_NAME);
@@ -117,6 +125,54 @@ sysd_cfg_yaml_get_port_subsys_info(void)
     return yaml_get_port_info(cfg_yaml_handle, BASE_SUBSYSTEM);
 
 } /* sysd_cfg_yaml_get_port_subsys_info */
+
+#ifdef USE_SW_FRU
+int
+sysd_cfg_yaml_get_fru_info(fru_eeprom_t *fru_eeprom)
+{
+    const YamlFruInfo *fru_info = yaml_get_fru_info(cfg_yaml_handle, BASE_SUBSYSTEM);
+    if (!fru_info) {
+       return -1;
+    }
+    VLOG_INFO("diag_version: %s", fru_info->diag_version);
+    strncpy(fru_eeprom->country_code, fru_info->country_code,
+                                       FRU_COUNTRY_CODE_LEN);
+    fru_eeprom->country_code[FRU_COUNTRY_CODE_LEN] = '\0';
+    fru_eeprom->diag_version = fru_info->diag_version;
+    fru_eeprom->label_revision = fru_info->label_revision;
+    sscanf(fru_info->base_mac_address, "%x:%x:%x:%x:%x:%x",
+       (unsigned int *) &fru_eeprom->base_mac_address[0],
+       (unsigned int *) &fru_eeprom->base_mac_address[1],
+       (unsigned int *) &fru_eeprom->base_mac_address[2],
+       (unsigned int *) &fru_eeprom->base_mac_address[3],
+       (unsigned int *) &fru_eeprom->base_mac_address[4],
+       (unsigned int *) &fru_eeprom->base_mac_address[5]
+    );
+    /*
+     * Generate a random mac address everytime for vsi
+     * To have some sane values, use rand to generate
+     * only the last 24 bits
+     */
+    srand (time(NULL));
+    fru_eeprom->base_mac_address[3] = rand() & 0xff;
+    fru_eeprom->base_mac_address[4] = rand() & 0xff;
+    fru_eeprom->base_mac_address[5] = rand() & 0xff;
+    strncpy(fru_eeprom->manufacture_date, fru_info->manufacture_date,
+            FRU_MANUFACTURE_DATE_LEN);
+    fru_eeprom->manufacture_date[FRU_MANUFACTURE_DATE_LEN] = '\0';
+    fru_eeprom->manufacturer = fru_info->manufacturer;
+    fru_eeprom->num_macs = fru_info->num_macs;
+    fru_eeprom->onie_version = fru_info->onie_version;
+    fru_eeprom->part_number = fru_info->part_number;
+    fru_eeprom->platform_name = fru_info->platform_name;
+    fru_eeprom->product_name = fru_info->product_name;
+    fru_eeprom->serial_number = fru_info->serial_number;
+    fru_eeprom->service_tag = fru_info->service_tag;
+    fru_eeprom->vendor = fru_info->vendor;
+    return 0;
+
+} /* sysd_cfg_yaml_get_fru_info  */
+#endif /* USE_SW_FRU */
 
 bool
 sysd_cfg_yaml_fru_read(unsigned char *fru_hdr, int hdr_len)

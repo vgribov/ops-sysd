@@ -39,3 +39,5 @@ files:
         filename:   devices.yaml
     -   name:       ports
         filename:   ports.yaml
+    -   name:       fru
+        filename:   fru.yaml

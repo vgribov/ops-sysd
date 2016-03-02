@@ -32,12 +32,15 @@
 #define DEVICES_YAML HWDESC_FILE_LINK
 #define PORTS_YAML HWDESC_FILE_LINK
 
+#include "sysd_fru.h"
+
 /* Config YAML functions */
 bool sysd_cfg_yaml_init(char *hw_desc_dir);
 int sysd_cfg_yaml_get_port_count(void);
 YamlPort *sysd_cfg_yaml_get_port_info(int index);
 YamlPortInfo *sysd_cfg_yaml_get_port_subsys_info(void);
 bool sysd_cfg_yaml_fru_read(unsigned char *fru_hdr, int hdr_len);
+int sysd_cfg_yaml_get_fru_info(fru_eeprom_t *fru_eeprom);
 
 /** @} end of group ops-sysd */
 

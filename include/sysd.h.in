@@ -115,6 +115,7 @@
 #define __SYSD_H__
 
 #cmakedefine PLATFORM_SIMULATION
+#cmakedefine USE_SW_FRU
 
 #include <stdint.h>
 #include "sysd_fru.h"
