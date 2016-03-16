@@ -41,7 +41,7 @@ configure_file (${PROJECT_SOURCE_DIR}/${INCL_DIR}/sysd_cfg_yaml.h.in
 
 set (MANIFEST_FILE_PATH /etc/openswitch/image.manifest)
 set (OS_RELEASE_FILE_PATH /etc/os-release)
-set (VER_DETAIL_FILE_PATH /var/lib/version_detail)
+set (VER_DETAIL_FILE_PATH /var/lib/version_detail.yaml)
 
 # Update the image.manifest file location in sysd_util
 configure_file (${PROJECT_SOURCE_DIR}/${INCL_DIR}/sysd_util.h.in
@@ -75,7 +75,7 @@ add_executable (${SYSD} ${SOURCES})
 
 target_link_libraries (${SYSD} ${OPSUTILS_LIBRARIES} ${CONFIG_YAML_LIBRARIES}
                        ${OVSCOMMON_LIBRARIES} ${OVSDB_LIBRARIES} ${ZLIB_LIBRARIES}
-                       -lpthread -lrt -lsupportability)
+                       -lpthread -lrt -lsupportability -lyaml)
 
 # The default install prefix is /usr. We want to install manifest file at
 # '/etc/openswitch'. So change the install prefix to '/', and use relative
