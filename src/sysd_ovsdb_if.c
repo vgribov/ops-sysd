@@ -44,6 +44,7 @@
 #include "sysd.h"
 #include "sysd_util.h"
 #include "sysd_ovsdb_if.h"
+#include "eventlog.h"
 
 #define PKG_INFO_MAX_LEN 128
 
@@ -288,6 +289,8 @@ sysd_initial_subsystem_add(struct ovsdb_idl_txn *txn, sysd_subsystem_t *subsys_p
     ovs_intf = SYSD_OVS_PTR_CALLOC(ovsrec_interface *, subsys_ptr->intf_count);
     if (ovs_intf == NULL) {
         VLOG_ERR("Failed to allocate memory for OVS subsystem interfaces.");
+        log_event("SYS_ALLOCATE_MEMORY_FAILURE", EV_KV("value",
+            "%s", "OVS subsystem interfaces"));
         return ovs_subsys;
     }
 
@@ -627,6 +630,8 @@ sysd_initial_configure(struct ovsdb_idl_txn *txn)
     ovs_subsys_l = SYSD_OVS_PTR_CALLOC(ovsrec_subsystem *, num_subsystems);
     if (ovs_subsys_l == NULL) {
         VLOG_ERR("Failed to allocate memory for OVS subsystem.");
+        log_event("SYS_ALLOCATE_MEMORY_FAILURE", EV_KV("value",
+            "%s", "OVS subsystem"));
         return;
     }
 
@@ -640,6 +645,8 @@ sysd_initial_configure(struct ovsdb_idl_txn *txn)
     ovs_daemon_l = SYSD_OVS_PTR_CALLOC(ovsrec_daemon *, num_daemons);
     if (ovs_daemon_l == NULL) {
         VLOG_ERR("Failed to allocate memory for OVS daemon table.");
+        log_event("SYS_ALLOCATE_MEMORY_FAILURE", EV_KV("value",
+            "%s", "OVS daemon table"));
         return;
     }
 

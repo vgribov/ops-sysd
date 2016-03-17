@@ -33,6 +33,7 @@
 #include "sysd.h"
 #include "sysd_cfg_yaml.h"
 #include "string.h"
+#include "eventlog.h"
 
 VLOG_DEFINE_THIS_MODULE(cfg_yaml);
 
@@ -93,6 +94,7 @@ sysd_cfg_yaml_init(char *hw_desc_dir)
     rc = yaml_init_devices(cfg_yaml_handle, BASE_SUBSYSTEM);
     if (0 > rc) {
         VLOG_ERR("Failed to intialize devices");
+        log_event("SYS_INITIALIZE_DEVICE_FAILURE", NULL);
         return (false);
     }
     fru_dev = yaml_find_device(cfg_yaml_handle, BASE_SUBSYSTEM, FRU_EEPROM_NAME);
@@ -195,6 +197,7 @@ sysd_cfg_yaml_fru_read(unsigned char *fru_hdr, int hdr_len)
     rc = i2c_execute(cfg_yaml_handle, BASE_SUBSYSTEM, fru_dev, cmds);
     if (0 != rc) {
         VLOG_ERR("Failed to read FRU header.");
+        log_event("SYS_FRU_HEADER_READ_FAILURE", NULL);
         return (false);
     }
 

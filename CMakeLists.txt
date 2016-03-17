@@ -75,7 +75,7 @@ add_executable (${SYSD} ${SOURCES})
 
 target_link_libraries (${SYSD} ${OPSUTILS_LIBRARIES} ${CONFIG_YAML_LIBRARIES}
                        ${OVSCOMMON_LIBRARIES} ${OVSDB_LIBRARIES} ${ZLIB_LIBRARIES}
-                       -lpthread -lrt)
+                       -lpthread -lrt -lsupportability)
 
 # The default install prefix is /usr. We want to install manifest file at
 # '/etc/openswitch'. So change the install prefix to '/', and use relative
