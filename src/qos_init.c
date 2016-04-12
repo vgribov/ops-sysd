@@ -416,6 +416,9 @@ qos_init_trust(struct ovsdb_idl_txn *txn,
     struct smap smap;
 
     qos_info = sysd_cfg_yaml_get_qos_info();
+    if (qos_info == NULL) {
+        return;
+    }
 
     /* trust pointer could be NULL only if YAML init has failed. */
     if (qos_info->trust) {
@@ -492,6 +495,12 @@ void
 qos_init_cos_map(struct ovsdb_idl_txn *txn,
                  struct ovsrec_system *system_row)
 {
+    const YamlCosMapEntry *yaml_cos_map_entry =
+            sysd_cfg_yaml_get_cos_map_entry(0);
+    if (yaml_cos_map_entry == NULL) {
+        return;
+    }
+
     /* Create the cos-map rows. */
     struct ovsrec_qos_cos_map_entry *cos_map_rows[QOS_COS_MAP_ENTRY_COUNT];
     int i;
@@ -613,6 +622,12 @@ void
 qos_init_dscp_map(struct ovsdb_idl_txn *txn,
                   struct ovsrec_system *system_row)
 {
+    const YamlDscpMapEntry *yaml_dscp_map_entry =
+            sysd_cfg_yaml_get_dscp_map_entry(0);
+    if (yaml_dscp_map_entry == NULL) {
+        return;
+    }
+
     /* Create the dscp-map rows. */
     struct ovsrec_qos_dscp_map_entry *dscp_map_rows[QOS_DSCP_MAP_ENTRY_COUNT];
     int i;
@@ -645,6 +660,9 @@ qos_init_queue_profile(struct ovsdb_idl_txn *txn,
                        struct ovsrec_system *system_row)
 {
     YamlQosInfo *qos_info = sysd_cfg_yaml_get_qos_info();
+    if (qos_info == NULL) {
+        return;
+    }
 
     /* Create the default profile. */
     qos_queue_profile_create_factory_default(txn, qos_info->default_name);
@@ -691,6 +709,9 @@ qos_init_schedule_profile(struct ovsdb_idl_txn *txn,
                            struct ovsrec_system *system_row)
 {
     YamlQosInfo *qos_info = sysd_cfg_yaml_get_qos_info();
+    if (qos_info == NULL) {
+        return;
+    }
 
     /* Create the default profile. */
     qos_schedule_profile_create_factory_default(txn, qos_info->default_name);

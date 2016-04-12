@@ -95,7 +95,6 @@ sysd_cfg_yaml_init(char *hw_desc_dir)
     rc = yaml_parse_qos(cfg_yaml_handle, BASE_SUBSYSTEM);
     if (0 > rc) {
         VLOG_ERR("Unable to parse qos yaml config file.");
-        return (false);
     }
 
     rc = yaml_init_devices(cfg_yaml_handle, BASE_SUBSYSTEM);
@@ -109,14 +108,6 @@ sysd_cfg_yaml_init(char *hw_desc_dir)
         VLOG_ERR("unable to find device %s in YAML description.", FRU_EEPROM_NAME);
         return (false);
     }
-
-#ifdef NOTYET
-    rc = yaml_init_qos(cfg_yaml_handle, BASE_SUBSYSTEM);
-    if (0 > rc) {
-        VLOG_ERR("Failed to intialize qos");
-        return (false);
-    }
-#endif
 
     return (true);
 
