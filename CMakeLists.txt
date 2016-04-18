@@ -65,6 +65,7 @@ set (SOURCES ${SRC_DIR}/sysd.c
              ${SRC_DIR}/sysd_fru.c
              ${SRC_DIR}/sysd_ovsdb_if.c
              ${SRC_DIR}/qos_init.c
+             ${SRC_DIR}/acl_init.c
              ${SRC_DIR}/sysd_util.c)
 
 # Rules to build ops-sysd

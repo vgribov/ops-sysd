@@ -97,6 +97,12 @@ sysd_cfg_yaml_init(char *hw_desc_dir)
         VLOG_ERR("Unable to parse qos yaml config file.");
     }
 
+    rc = yaml_parse_acl(cfg_yaml_handle, BASE_SUBSYSTEM);
+    if (0 > rc) {
+        VLOG_ERR("Unable to parse acl yaml config file.");
+        return (false);
+    }
+
     rc = yaml_init_devices(cfg_yaml_handle, BASE_SUBSYSTEM);
     if (0 > rc) {
         VLOG_ERR("Failed to intialize devices");
@@ -265,4 +271,9 @@ sysd_cfg_yaml_get_queue_profile_entry(unsigned int idx)
     return yaml_get_queue_profile_entry(cfg_yaml_handle, BASE_SUBSYSTEM, idx);
 }
 
+YamlAclInfo *
+sysd_cfg_yaml_get_acl_info(void)
+{
+    return yaml_get_acl_info(cfg_yaml_handle, BASE_SUBSYSTEM);
+}
 /** @} end of group sysd */

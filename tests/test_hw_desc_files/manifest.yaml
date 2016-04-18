@@ -43,3 +43,5 @@ files:
         filename:   qos.yaml
     -   name:       fru
         filename:   fru.yaml
+    -   name:       acl
+        filename:   acl.yaml

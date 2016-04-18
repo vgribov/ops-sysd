@@ -50,6 +50,7 @@ int sysd_cfg_yaml_get_schedule_profile_entry_count(void);
 const YamlScheduleProfileEntry *sysd_cfg_yaml_get_schedule_profile_entry(unsigned int idx);
 int sysd_cfg_yaml_get_queue_profile_entry_count(void);
 const YamlQueueProfileEntry *sysd_cfg_yaml_get_queue_profile_entry(unsigned int idx);
+YamlAclInfo *sysd_cfg_yaml_get_acl_info(void);
 
 /** @} end of group ops-sysd */
 
