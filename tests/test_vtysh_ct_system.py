@@ -20,6 +20,7 @@
 from time import sleep
 from opsvsi.docker import *
 from opsvsi.opsvsitest import *
+from pytest import mark
 
 
 class PlatformSystemTests(OpsVsiTest):
@@ -157,6 +158,7 @@ class PlatformSystemTests(OpsVsiTest):
         return True
 
 
+@mark.skipif(True, reason="Disabling old tests")
 class Test_sys:
 
     def setup(self):

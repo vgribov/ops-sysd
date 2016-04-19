@@ -27,6 +27,7 @@ from opsvsi.opsvsitest import info
 from opsvsi.opsvsitest import OpsVsiTest
 from opsvsi.opsvsitest import OpsVsiLink
 from opsvsi.opsvsitest import VsiOpenSwitch
+from pytest import mark
 
 
 OVS_VSCTL = "/usr/bin/ovs-vsctl "
@@ -214,6 +215,7 @@ class OSReleaseTest(OpsVsiTest):
         time.sleep(tm)
 
 
+@mark.skipif(True, reason="Disabling old tests")
 class TestRunner:
     """py.test based test runner class."""
     @classmethod

@@ -19,6 +19,7 @@ from mininet.node import Host
 from mininet.net import Mininet
 from mininet.topo import SingleSwitchTopo
 from opsvsi.opsvsitest import OpsVsiTest, OpsVsiLink, VsiOpenSwitch
+from pytest import mark
 
 class ShowVersionDetailSysdCtTest(OpsVsiTest):
     def setupNet(self):
@@ -40,6 +41,7 @@ class ShowVersionDetailSysdCtTest(OpsVsiTest):
         assert "ops-sysd" in output, "ops-sysd was not found in \
         Package_Info table"
 
+@mark.skipif(True, reason="Disabling old tests")
 class TestRunner:
     @classmethod
     def setup_class(cls):
