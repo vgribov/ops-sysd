@@ -20,9 +20,10 @@
 OpenSwitch Test for checking platform daemons and for errors while bootup.
 """
 
-from time import sleep
+from __future__ import unicode_literals, absolute_import
+from __future__ import print_function, division
 
-from .helpers import wait_until_interface_up
+from time import sleep
 
 from .platform_err_msgs import err_msgs
 
@@ -57,6 +58,30 @@ hw_daemons = [
     'ops-fand']
 
 msgs = err_msgs()
+
+
+def wait_until_interface_up(switch, portlbl, timeout=30, polling_frequency=1):
+    """
+    Wait until the interface, as mapped by the given portlbl, is marked as up.
+
+    :param switch: The switch node.
+    :param str portlbl: Port label that is mapped to the interfaces.
+    :param int timeout: Number of seconds to wait.
+    :param int polling_frequency: Frequency of the polling.
+    :return: None if interface is brought-up. If not, an assertion is raised.
+    """
+    for i in range(timeout):
+        status = switch.libs.vtysh.show_interface(portlbl)
+        if status['interface_state'] == 'up':
+            break
+        sleep(polling_frequency)
+    else:
+        assert False, (
+            'Interface {}:{} never brought-up after '
+            'waiting for {} seconds'.format(
+                switch.identifier, portlbl, timeout
+            )
+        )
 
 
 def configure_switch_ips(step):
