@@ -35,18 +35,11 @@
 #include "openswitch-idl.h"
 #include "vtysh/vtysh_ovsdb_if.h"
 #include "vtysh/vtysh_ovsdb_config.h"
+#include "vtysh/utils/system_vtysh_utils.h"
 
 VLOG_DEFINE_THIS_MODULE(vtysh_system_cli);
 
 extern struct ovsdb_idl *idl;
-
-const char *psu_state_string[] = {
-    "Absent",
-    "Input Fault",
-    "Output Fault",
-    "OK",
-    "Unknown"
-};
 
 /*
  * Function        : compare_fan
@@ -66,6 +59,23 @@ compare_fan (const void* a,const void* b)
 }
 
 /*
+ * Function        : compare_psu
+ * Resposibility    : Power Supply sort function for qsort
+ * Parameters
+ *   a   : Pointer to 1st element in the array
+ *   b   : Pointer to next element in the array
+ * Return      : comparative difference between names.
+ */
+static inline int
+compare_psu(const void* a,const void* b)
+{
+    struct ovsrec_power_supply* s1 = (struct ovsrec_power_supply*)a;
+    struct ovsrec_power_supply* s2 = (struct ovsrec_power_supply*)b;
+
+    return (strcmp(s1->name,s2->name));
+}
+
+/*
  * Function        : format_psu_string
  * Resposibility     : Change status string in OVSDB to more
  *        readable string
@@ -79,14 +89,18 @@ format_psu_string (char* status)
     if (!status)
         return NULL;
 
-    if (0 == strcmp (status,OVSREC_POWER_SUPPLY_STATUS_FAULT_ABSENT))
-        return psu_state_string[POWER_SUPPLY_STATUS_FAULT_ABSENT];
-    else if (0 == strcmp (status,OVSREC_POWER_SUPPLY_STATUS_FAULT_INPUT))
-        return psu_state_string[POWER_SUPPLY_STATUS_FAULT_INPUT];
-    else if (0 == strcmp (status,OVSREC_POWER_SUPPLY_STATUS_FAULT_OUTPUT))
-        return psu_state_string[POWER_SUPPLY_STATUS_FAULT_OUTPUT];
+    if (0 == strcmp(status,OVSREC_POWER_SUPPLY_STATUS_FAULT_ABSENT))
+        return POWER_SUPPLY_FAULT_ABSENT;
+    else if (0 == strcmp(status,OVSREC_POWER_SUPPLY_STATUS_FAULT_INPUT))
+        return POWER_SUPPLY_FAULT_INPUT;
+    else if (0 == strcmp(status,OVSREC_POWER_SUPPLY_STATUS_FAULT_OUTPUT))
+        return POWER_SUPPLY_FAULT_OUTPUT;
+    else if (0 == strcmp(status,OVSREC_POWER_SUPPLY_STATUS_UNKNOWN))
+        return POWER_SUPPLY_UNKNOWN;
+    else if (0 == strcmp(status,OVSREC_POWER_SUPPLY_STATUS_OK))
+        return POWER_SUPPLY_OK;
 
-    return NULL;
+    return status;
 }
 
 /*
@@ -187,6 +201,7 @@ cli_system_get_all()
     struct ovsrec_fan* pFanSort = NULL;
     const struct ovsrec_led* pLed = NULL;
     const struct ovsrec_power_supply* pPSU = NULL;
+    struct ovsrec_power_supply* pPSUsort = NULL;
     const struct ovsrec_temp_sensor* pTempSen = NULL;
     int n = 0, i = 0;
 
@@ -254,14 +269,36 @@ cli_system_get_all()
     vty_out(vty,"%-10s%-10s%s","Name","Status",VTY_NEWLINE);
     vty_out(vty,"%s%s","-----------------------",VTY_NEWLINE);
     n = pSys->n_power_supplies;
-    if (0 != n)
+
+    if (n > 0)
     {
+        pPSUsort = (struct ovsrec_power_supply*)calloc(n,
+					sizeof(struct ovsrec_power_supply));
+
+        i = 0;
         OVSREC_POWER_SUPPLY_FOR_EACH (pPSU,idl)
         {
-            vty_out(vty,"%-10s",pPSU->name);
-            vty_out(vty,"%-10s",format_psu_string(pPSU->status));
+            if (pPSU)
+            {
+                memcpy(pPSUsort+i,pPSU,sizeof(struct ovsrec_power_supply));
+                i++;
+            }
+	}
+
+        qsort((void*)pPSUsort,n,sizeof(struct ovsrec_power_supply),compare_psu);
+
+        for (i = 0; i < n ; i++)
+        {
+            vty_out(vty,"%-15s",(pPSUsort+i)->name);
+            vty_out(vty,"%-10s",format_psu_string((pPSUsort+i)->status));
             vty_out(vty,"%s",VTY_NEWLINE);
         }
+
+        if(pPSUsort)
+	{
+            free(pPSUsort);
+            pPSUsort = NULL;
+	}
     }
 
     vty_out(vty,"%sTemperature Sensors:%s%s",VTY_NEWLINE,VTY_NEWLINE,
