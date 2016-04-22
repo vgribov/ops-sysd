@@ -53,6 +53,7 @@ sysd_process_eeprom(unsigned char *buf, fru_eeprom_t *fru_eeprom, int len)
     int                 crc_len;
     unsigned char       *bp;
     char                *tlv_value = NULL;
+    unsigned char       *tlv_value_n = NULL;
     unsigned int        chksum;
     unsigned int        found_crc;
     fru_tlv_t           *fru_tlv;
@@ -88,7 +89,8 @@ sysd_process_eeprom(unsigned char *buf, fru_eeprom_t *fru_eeprom, int len)
 
             case FRU_NUM_MAC_TYPE:
                 /* Two byte big-endian uint */
-                fru_eeprom->num_macs = (uint16_t) (tlv_value[0] << 8) | (tlv_value[1]);
+                tlv_value_n = (unsigned char*)tlv_value;
+                fru_eeprom->num_macs = (uint16_t) ((tlv_value_n[0] << 8) | (tlv_value_n[1]));
                 break;
 
             case FRU_BASE_MAC_ADDRESS_TYPE:
