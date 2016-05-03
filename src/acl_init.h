@@ -25,7 +25,7 @@
 #include <vswitch-idl.h>
 
 /**
- * Initializes factory default acl hw limits settings in ovsdb.
+ * Initializes factory default acl limits settings in ovsdb.
  */
-void acl_init_hw_limits(struct ovsdb_idl_txn *txn,
-        struct ovsrec_system *system_row);
+void acl_init_limits(struct ovsdb_idl_txn *txn,
+                     struct ovsrec_system *system_row);

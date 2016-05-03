@@ -759,7 +759,7 @@ sysd_initial_configure(struct ovsdb_idl_txn *txn)
     qos_init_queue_profile(txn, sys);
     qos_init_schedule_profile(txn, sys);
     /* ACL init */
-    acl_init_hw_limits(txn, sys);
+    acl_init_limits(txn, sys);
 } /* sysd_initial_configure */
 
 static void
