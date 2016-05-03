@@ -30,36 +30,42 @@
 #include "vswitch-idl.h"
 #include "openvswitch/vlog.h"
 
-#define ACL_HW_LIMIT_BUFFER_SIZE 16
+#define ACL_LIMIT_BUFFER_SIZE 16
 
-VLOG_DEFINE_THIS_MODULE(acl_init_hw_limits);
+/* Key strings defined in vswitch.xml that could/should be generated with IDL
+   e.g. OVSREC_SYSTEM_OTHER_INFO_KEY_MAX_ACLS */
+#define ACL_LIMIT_KEY_MAX_ACLS "max_acls"
+#define ACL_LIMIT_KEY_MAX_ACES "max_aces"
+#define ACL_LIMIT_KEY_MAX_ACES_PER_ACL "max_aces_per_acl"
+
+VLOG_DEFINE_THIS_MODULE(acl_init_limits);
 
 /**
  * Initializes acl max acls and max aces for the given txn and system_row.
  */
 void
-acl_init_hw_limits(struct ovsdb_idl_txn *txn,
-               struct ovsrec_system *system_row)
+acl_init_limits(struct ovsdb_idl_txn *txn,
+                struct ovsrec_system *system_row)
 {
     YamlAclInfo *acl_info;
     struct smap smap;
-    char max_acls_str[ACL_HW_LIMIT_BUFFER_SIZE];
-    char max_aces_str[ACL_HW_LIMIT_BUFFER_SIZE];
-    char max_aces_per_acl_str[ACL_HW_LIMIT_BUFFER_SIZE];
+    char max_acls_str[ACL_LIMIT_BUFFER_SIZE];
+    char max_aces_str[ACL_LIMIT_BUFFER_SIZE];
+    char max_aces_per_acl_str[ACL_LIMIT_BUFFER_SIZE];
 
     acl_info = sysd_cfg_yaml_get_acl_info();
 
     /* smap_replace expects char values */
-    snprintf(max_acls_str, ACL_HW_LIMIT_BUFFER_SIZE, "%d", acl_info->max_acls);
-    snprintf(max_aces_str, ACL_HW_LIMIT_BUFFER_SIZE, "%d", acl_info->max_aces);
-    snprintf(max_aces_per_acl_str, ACL_HW_LIMIT_BUFFER_SIZE, "%d", acl_info->max_aces_per_acl);
+    snprintf(max_acls_str, ACL_LIMIT_BUFFER_SIZE, "%d", acl_info->max_acls);
+    snprintf(max_aces_str, ACL_LIMIT_BUFFER_SIZE, "%d", acl_info->max_aces);
+    snprintf(max_aces_per_acl_str, ACL_LIMIT_BUFFER_SIZE, "%d", acl_info->max_aces_per_acl);
 
-    /* Store acl limitations in other_config column */
-    smap_clone(&smap, &system_row->other_config);
-    smap_replace(&smap, "max_acls", max_acls_str);
-    smap_replace(&smap, "max_aces", max_aces_str);
-    smap_replace(&smap, "max_aces_per_acl", max_aces_per_acl_str);
-    ovsrec_system_set_other_config(system_row, &smap);
+    /* Store acl limitations in other_info column */
+    smap_clone(&smap, &system_row->other_info);
+    smap_replace(&smap, ACL_LIMIT_KEY_MAX_ACLS, max_acls_str);
+    smap_replace(&smap, ACL_LIMIT_KEY_MAX_ACES, max_aces_str);
+    smap_replace(&smap, ACL_LIMIT_KEY_MAX_ACES_PER_ACL, max_aces_per_acl_str);
+    ovsrec_system_set_other_info(system_row, &smap);
     smap_destroy(&smap);
     return;
 }
