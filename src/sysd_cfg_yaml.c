@@ -45,7 +45,7 @@ VLOG_DEFINE_THIS_MODULE(cfg_yaml);
 
 static YamlConfigHandle cfg_yaml_handle = (YamlConfigHandle *)NULL;
 static const YamlDevice *fru_dev = NULL;
-
+bool fru_yaml = true;
 
 bool
 sysd_cfg_yaml_open(char *hw_desc_dir)
@@ -84,13 +84,14 @@ sysd_cfg_yaml_init(char *hw_desc_dir)
         return (false);
     }
 
-#ifdef USE_SW_FRU
     rc = yaml_parse_fru(cfg_yaml_handle, BASE_SUBSYSTEM);
-    if (0 > rc) {
+    if (FRU_YAML_NOT_FOUND == rc) {
+        VLOG_INFO("fru.yaml missing or not in manifest, using EEPROM");
+        fru_yaml = false;
+    } else if (0 > rc) {
         VLOG_ERR("Failed to parse fru yaml config file");
         return (false);
     }
-#endif
 
     rc = yaml_parse_qos(cfg_yaml_handle, BASE_SUBSYSTEM);
     if (0 > rc) {
@@ -139,7 +140,6 @@ sysd_cfg_yaml_get_port_subsys_info(void)
 
 } /* sysd_cfg_yaml_get_port_subsys_info */
 
-#ifdef USE_SW_FRU
 int
 sysd_cfg_yaml_get_fru_info(fru_eeprom_t *fru_eeprom)
 {
@@ -185,7 +185,6 @@ sysd_cfg_yaml_get_fru_info(fru_eeprom_t *fru_eeprom)
     return 0;
 
 } /* sysd_cfg_yaml_get_fru_info  */
-#endif /* USE_SW_FRU */
 
 bool
 sysd_cfg_yaml_fru_read(unsigned char *fru_hdr, int hdr_len)

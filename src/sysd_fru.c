@@ -41,6 +41,8 @@
 
 VLOG_DEFINE_THIS_MODULE(fru);
 
+extern bool fru_yaml;
+
 /** @ingroup sysd
  * @{ */
 
@@ -193,19 +195,21 @@ int
 sysd_read_fru_eeprom(fru_eeprom_t *fru_eeprom)
 {
     bool            rc;
-#ifdef USE_SW_FRU
-    /* Populate stub generic-x86 EEPROM info */
-    rc = sysd_cfg_yaml_get_fru_info(fru_eeprom);
-    if (0 > rc) {
-        VLOG_ERR("Error getting yaml fru info. rc = %d.", rc);
-        return -1;
-    }
-    VLOG_INFO("Retrieved fru info from YAML");
-#else
     unsigned char   *buf;
     int             len;
     uint16_t        total_len;
     fru_header_t    header;
+
+    if (fru_yaml) {
+        /* Populate fru from yaml file */
+        rc = sysd_cfg_yaml_get_fru_info(fru_eeprom);
+        if (0 > rc) {
+            VLOG_ERR("Error getting yaml fru info. rc = %d.", rc);
+            return -1;
+        }
+        VLOG_INFO("Retrieved fru info from fru.yaml");
+        return 0;
+    }
 
     VLOG_INFO("Getting fru info from EEPROM");
 
@@ -248,7 +252,6 @@ sysd_read_fru_eeprom(fru_eeprom_t *fru_eeprom)
         return -1;
     }
     free(buf);
-#endif
 
     return 0;
 } /* sysd_read_fru_eeprom() */
