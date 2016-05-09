@@ -404,10 +404,11 @@ sysd_configure_default_vrf(struct ovsdb_idl_txn *txn,
                            struct ovsrec_system *ovs_row)
 {
     struct ovsrec_vrf *default_vrf_row = NULL;
-
+    const int64_t table_id = 0;
     default_vrf_row = ovsrec_vrf_insert(txn);
     ovsrec_vrf_set_name(default_vrf_row, DEFAULT_VRF_NAME);
     ovsrec_system_set_vrfs(ovs_row, &default_vrf_row, 1);
+    ovsrec_vrf_set_table_id(default_vrf_row, &table_id, sizeof(table_id));
 
 }/* sysd_configure_default_vrf */
 
