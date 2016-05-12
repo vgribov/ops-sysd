@@ -25,7 +25,7 @@ from __future__ import print_function, division
 
 from time import sleep
 
-from .platform_err_msgs import err_msgs
+from platform_err_msgs import err_msgs
 
 TOPOLOGY = """
 # +-------+
