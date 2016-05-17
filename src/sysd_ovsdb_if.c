@@ -330,6 +330,8 @@ sysd_initial_subsystem_add(struct ovsdb_idl_txn *txn, sysd_subsystem_t *subsys_p
 
     ovsrec_subsystem_set_interfaces(ovs_subsys, ovs_intf, i);
 
+    free(ovs_intf);
+
     return ovs_subsys;
 
 } /* sysd_initial_subsystem_add */
@@ -746,6 +748,7 @@ sysd_initial_configure(struct ovsdb_idl_txn *txn)
 
         ovsrec_system_set_daemons(sys, ovs_daemon_l, num_daemons);
     }
+    free(ovs_daemon_l);
 
     /*
      * Update the software info, including the switch version,

@@ -95,6 +95,8 @@ get_sys_cmd_out(char *cmd, char **output)
         nbytes = getline(&buf, &size, fd);
         if (nbytes <= 0) {
             VLOG_ERR("Failed to parse output. rc=%s", ovs_strerror(errno));
+            pclose(fd);
+            free(buf);
             return;
         }
 
@@ -218,6 +220,8 @@ sysd_create_link_to_hwdesc_files(void)
     rc = create_link_to_desc_files(manufacturer, product_name);
     if (rc) {
         VLOG_ERR("Failed to create link to HW descriptor files");
+        free(manufacturer);
+        free(product_name);
         return -1;
     }
 
