@@ -216,6 +216,7 @@ sysd_get_interface_info(void)
         interfaces[idx] = sysd_cfg_yaml_get_port_info(idx);
         if (NULL == interfaces[idx]) {
             VLOG_ERR("Unable to get interface info for interface index %d", idx);
+            free(interfaces);
             return -1;
         }
     }
@@ -406,6 +407,7 @@ sysd_exit(struct unixctl_conn *conn, int argc OVS_UNUSED,
 {
     bool *exiting = exiting_;
     *exiting = true;
+    free(subsystems);
     unixctl_command_reply(conn, NULL);
 
 } /* sysd_exit */
