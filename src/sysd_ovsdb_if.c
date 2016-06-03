@@ -49,6 +49,9 @@
 #include "sysd_ovsdb_if.h"
 #include "eventlog.h"
 
+#include <errno.h>
+
+
 VLOG_DEFINE_THIS_MODULE(ovsdb_if);
 
 /** @ingroup sysd
@@ -768,14 +771,21 @@ sysd_initial_configure(struct ovsdb_idl_txn *txn)
 static void
 sysd_set_hw_done(void)
 {
-    struct ovsdb_idl_txn                *txn = NULL;
-    const struct ovsrec_system    *sys = NULL;
-    enum ovsdb_idl_txn_status           txn_status = TXN_ERROR;
+    struct ovsdb_idl_txn *txn = NULL;
+    const struct ovsrec_system *sys = NULL;
+    enum ovsdb_idl_txn_status txn_status = TXN_ERROR;
+    char hostname[128];
+    int ret;
+
+    ret = gethostname(hostname, sizeof(hostname));
+    if(ret < 0)
+        VLOG_ERR("hostname:%s ret errno %s", hostname, strerror(errno));
 
     txn = ovsdb_idl_txn_create(idl);
 
     OVSREC_SYSTEM_FOR_EACH(sys, idl) {
         ovsrec_system_set_cur_hw(sys, (int64_t) 1);
+        VLOG_INFO("%s system cur_hw after %d", hostname, (int)(sys->cur_hw));
         ovsrec_system_set_next_hw(sys, (int64_t) 1);
     }
 
@@ -799,6 +809,8 @@ sysd_chk_if_hw_daemons_done(void)
     int num_found = 0;
 
     const struct ovsrec_daemon *db_daemon;
+    char hostname[128];
+    int ret = 0;
 
     /*
      * There are several platform daemons, of which some read the h/w
@@ -820,6 +832,13 @@ sysd_chk_if_hw_daemons_done(void)
      * processing is done before any user configuration is pushed.
     */
 
+    ret = gethostname(hostname, sizeof(hostname));
+    if(ret < 0)
+        VLOG_ERR("hostname:%s ret errno:%s", hostname, strerror(errno));
+
+    VLOG_INFO("hostname:%s Number of Daemons running %d", hostname,
+              num_hw_daemons);
+
     if (num_hw_daemons <= 0) {
         sysd_set_hw_done();
         return;
@@ -829,6 +848,11 @@ sysd_chk_if_hw_daemons_done(void)
     for (i = 0; i < num_daemons; i++) {
         if (daemons[i]->is_hw_handler) {
             OVSREC_DAEMON_FOR_EACH(db_daemon, idl) {
+                VLOG_INFO("%s db_daemon:'%s' daemons_manifest:'%s'"
+                           " db_daemon cur_hw: %d db_daemon is_hw_handler: %d",
+                           hostname, db_daemon->name, daemons[i]->name,
+                           (int)(db_daemon->cur_hw),
+                           (int)(db_daemon->is_hw_handler));
                 if (db_daemon->is_hw_handler) {
                     if (strncmp(daemons[i]->name, db_daemon->name,
                                 strlen(daemons[i]->name)) == 0) {
@@ -848,7 +872,10 @@ sysd_chk_if_hw_daemons_done(void)
     }
 
     /* Not all set, try again later. */
-    if (not_set || (num_found == 0)) return;
+    if (not_set || (num_found == 0))
+        return;
+    else
+        VLOG_INFO("%s num_found count %d", hostname, num_found);
 
     /* All are set. Now set system table cur_hw, next_hw = 1 */
     sysd_set_hw_done();
@@ -892,7 +919,7 @@ sysd_run(void)
 
             txn_status = ovsdb_idl_txn_commit_block(txn);
             if (txn_status != TXN_SUCCESS) {
-                VLOG_ERR("Failed to commit the transaction. rc = %u", txn_status);
+                VLOG_ERR("Failed to commit the transaction. rc = %s", ovsdb_idl_txn_status_to_string(txn_status));
             }
             ovsdb_idl_txn_destroy(txn);
         } else {
