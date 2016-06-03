@@ -272,6 +272,12 @@ _sysd_get_hw_handler(struct shash *object) {
 static int
 _sysd_process_daemons(struct shash *object) {
     const struct shash_node *dnode;
+    char hostname[128];
+    int ret;
+
+    ret = gethostname(hostname, sizeof(hostname));
+    if(ret < 0)
+        VLOG_ERR("hostname:%s ret errno: %s", hostname, strerror(errno));
 
     SHASH_FOR_EACH (dnode, object) {
         daemons = realloc(daemons, sizeof(daemon_info_t*)*(num_daemons+1));
@@ -297,6 +303,10 @@ _sysd_process_daemons(struct shash *object) {
 
         _sysd_get_hw_handler(json_object(dnode->data));
 
+        VLOG_INFO("%s daemons_manifest:'%s', daemons_manifest_cur_hw %d, "
+                  "daemons_manifest_is_hw_handler %d", hostname,
+                  daemons[num_daemons]->name, (int)(daemons[num_daemons]->cur_hw),
+                  (int)(daemons[num_daemons]->is_hw_handler));
         num_daemons++;
     }
 
