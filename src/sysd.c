@@ -1,5 +1,5 @@
 /************************************************************************//**
- * (c) Copyright 2015 Hewlett Packard Enterprise Development LP
+ * (c) Copyright 2015-2016 Hewlett Packard Enterprise Development LP
  *
  *    Licensed under the Apache License, Version 2.0 (the "License"); you may
  *    not use this file except in compliance with the License. You may obtain
@@ -499,7 +499,17 @@ main(int argc, char *argv[])
 
         sysd_wait();
         unixctl_server_wait(appctl);
-        if (exiting) {
+        if (idl_seqno != ovsdb_idl_get_seqno(idl)) {
+            /* IDL seqno could have changed because of the ovsdb_idl_run()
+             * called from the ovsdb_idl_txn_commit_block() calls inside
+             * sysd. This could happen when DB transactions get posted
+             * while sysd is inside sysd_run(). When this happens,
+             * ovsdb_idl_txn_commit_block() could clear any pending fd poll
+             * status and could cause the poll_block() below to wait
+             * until the next DB transaction happened, if any at all..
+             */
+            VLOG_DBG("IDL has changed. Continue to see what changed..");
+        } else if (exiting) {
             poll_immediate_wake();
         } else {
             poll_block();
