@@ -28,25 +28,27 @@ from time import sleep
 from platform_err_msgs import err_msgs
 
 TOPOLOGY = """
-# +-------+
-# |  ops1 |
-# +-------+
+# +-----+   +------+   +-------+
+# | hs1 +---+ ops1 +---+  hs2  |
+# +-----+   +------+   +-------+
 
 # Nodes
 [type=openswitch name="OpenSwitch 1"] ops1
-[type=openswitch name="OpenSwitch 2"] ops2
+[type=host name="Host 1"] hs1
+[type=host name="Host 2"] hs2
 
-ops1:if01 -- ops2:if01
+hs1:1 -- ops1:1
+hs2:1 -- ops1:2
 """
 
-
-ops1_router_id = "10.0.10.1"
-ops2_router_id = "10.0.10.2"
+ops_intf_id1 = "10.0.10.2"
+ops_intf_id2 = "10.0.20.2"
 
 network_pl = "24"
-ops_router_ids = [ops1_router_id, ops2_router_id]
+ops_intf_ids = [ops_intf_id1, ops_intf_id2]
 
 dutarray = []
+hstarray = []
 
 hw_daemons = [
     'ops-switchd',
@@ -84,21 +86,31 @@ def wait_until_interface_up(switch, portlbl, timeout=30, polling_frequency=1):
         )
 
 
-def configure_switch_ips(step):
+def configure_ips(step):
     step("Configuring switch IPs...")
 
     sw1 = dutarray[0]
-    sw2 = dutarray[1]
+    hs1 = hstarray[0]
+    hs2 = hstarray[1]
+
+    # Configure host interfaces
+    step("### Configuring host interfaces ###")
+    hs1.libs.ip.interface('1', addr='10.0.10.1/24', up=True)
+    hs2.libs.ip.interface('1', addr='10.0.20.3/24', up=True)
+
+    # Add routes on hosts
+    step("### Adding routes on hosts ###")
+    hs1.libs.ip.add_route('10.0.20.0/24', '10.0.10.2')
+    hs2.libs.ip.add_route('10.0.10.0/24', '10.0.20.2')
 
     # Configure IP and bring UP switch 1 interfaces
     with sw1.libs.vtysh.ConfigInterface('1') as ctx:
-        ip_addr = ops_router_ids[0] + "/" + network_pl
+        ip_addr = ops_intf_ids[0] + "/" + network_pl
         ctx.ip_address(ip_addr)
         ctx.no_shutdown()
 
-    # Configure IP and bring UP switch 2 interfaces
-    with sw2.libs.vtysh.ConfigInterface('1') as ctx:
-        ip_addr = ops_router_ids[1] + "/" + network_pl
+    with sw1.libs.vtysh.ConfigInterface('2') as ctx:
+        ip_addr = ops_intf_ids[1] + "/" + network_pl
         ctx.ip_address(ip_addr)
         ctx.no_shutdown()
 
@@ -135,36 +147,41 @@ def verify_bootup_logs(step):
 
 
 def verify_ping(step):
-    step("Verifying ping request...")
+    step("Verifying IPv4 ping...")
 
     sw1 = dutarray[0]
-    sw2 = dutarray[1]
+    hs1 = hstarray[0]
 
     # Wait until interfaces are up
-    for switch, portlbl in [(sw1, '1'), (sw2, '1')]:
+    for switch, portlbl in [(sw1, '1'), (sw1, '2')]:
         wait_until_interface_up(switch, portlbl)
 
     sleep(2)
-    # Ping IPv4-address from switch2 to host1
-    step("Test ping IPv4-address from sw1 to sw2")
-    ping_str = "ping " + ops_router_ids[1]
 
-    dump = sw1(ping_str)
+    # Ping IPv4-address from host1 to host2
+    step("Test ping IPv4-address from hs1 to hs2")
+    ping = hs1.libs.ping.ping(1, '10.0.20.3')
 
-    assert '0% packet loss' in dump, "Ping"
-    " between switches failed"
+    assert ping['transmitted'] == ping['received'] == 1, "Ping"
+    " between hosts failed"
 
 
 def test_ft_bootup(topology, step):
     ops1 = topology.get("ops1")
-    ops2 = topology.get("ops2")
+    hs1 = topology.get('hs1')
+    hs2 = topology.get('hs2')
+
     assert ops1 is not None
-    assert ops2 is not None
+    assert hs1 is not None
+    assert hs2 is not None
 
     global dutarray
-    dutarray = [ops1, ops2]
+    dutarray = [ops1]
 
-    configure_switch_ips(step)
+    global hstarray
+    hstarray = [hs1, hs2]
+
+    configure_ips(step)
 
     verify_bootup(step)
     verify_bootup_logs(step)
