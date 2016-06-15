@@ -196,7 +196,7 @@ sysd_read_fru_eeprom(fru_eeprom_t *fru_eeprom)
 {
     bool            rc;
     unsigned char   *buf;
-    int             len;
+    size_t             len;
     uint16_t        total_len;
     fru_header_t    header;
 
@@ -239,16 +239,18 @@ sysd_read_fru_eeprom(fru_eeprom_t *fru_eeprom)
         return -1;
     }
 
-    rc = sysd_cfg_yaml_fru_read(buf, len);
+    rc = sysd_cfg_yaml_fru_read(buf, (int)len);
     if (!rc) {
         VLOG_ERR("Error reading FRU EEPROM");
+        free(buf);
         return -1;
     }
 
     /* Populate EEPROM struct */
-    rc = sysd_process_eeprom(buf, fru_eeprom, total_len);
+    rc = sysd_process_eeprom(buf, fru_eeprom, (int)total_len);
     if (!rc) {
         VLOG_ERR("Error processing FRU EEPROM info");
+        free(buf);
         return -1;
     }
     free(buf);
