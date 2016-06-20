@@ -190,21 +190,8 @@ bool
 sysd_cfg_yaml_fru_read(unsigned char *fru_hdr, int hdr_len)
 {
     int         rc;
-    i2c_op      op;
-    i2c_op      *cmds[2];
 
-    op.direction        = READ;
-    op.device           = fru_dev->name;
-    op.register_address = 0;
-    op.byte_count       = hdr_len;
-    op.data             = fru_hdr;
-    op.set_register     = false;
-    op.negative_polarity = false;
-
-    cmds[0] = &op;
-    cmds[1] = (i2c_op *) NULL;
-
-    rc = i2c_execute(cfg_yaml_handle, BASE_SUBSYSTEM, fru_dev, cmds);
+    rc = i2c_data_read(cfg_yaml_handle, fru_dev, BASE_SUBSYSTEM, 0, hdr_len, fru_hdr);
     if (0 != rc) {
         VLOG_ERR("Failed to read FRU header.");
         log_event("SYS_FRU_HEADER_READ_FAILURE", NULL);
