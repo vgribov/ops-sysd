@@ -27,7 +27,7 @@
 #ifndef SYS_STR
 #define SYS_STR	         "System information\n"
 #endif
-
+#define CLOCK_STR  "Shows system clock information\n"
 typedef enum
 {
         CLI_FAN,
