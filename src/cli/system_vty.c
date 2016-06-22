@@ -339,6 +339,18 @@ DEFUN (cli_platform_show_system,
     return cli_system_get_all();
 }
 
+DEFUN_NOLOCK ( vtysh_show_system_clock,
+        vtysh_show_system_clock_cmd,
+        "show system clock",
+        SHOW_STR
+        SYS_STR
+        CLOCK_STR
+      )
+{
+    execute_command("date", 0, (const char **) NULL);
+    return CMD_SUCCESS;
+}
+
 /*******************************************************************
  * @func        : system_ovsdb_init
  * @detail      : Add system related table & columns to ops-cli
@@ -401,4 +413,6 @@ cli_post_init(void)
 {
     install_element (ENABLE_NODE, &cli_platform_show_system_cmd);
     install_element (VIEW_NODE, &cli_platform_show_system_cmd);
+    install_element (VIEW_NODE, &vtysh_show_system_clock_cmd);
+    install_element (ENABLE_NODE, &vtysh_show_system_clock_cmd);
 }
