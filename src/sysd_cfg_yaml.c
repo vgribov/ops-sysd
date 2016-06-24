@@ -144,6 +144,9 @@ int
 sysd_cfg_yaml_get_fru_info(fru_eeprom_t *fru_eeprom)
 {
     const YamlFruInfo *fru_info = yaml_get_fru_info(cfg_yaml_handle, BASE_SUBSYSTEM);
+    struct timespec tp;
+    unsigned int nsec_low;
+
     if (!fru_info) {
        return -1;
     }
@@ -166,7 +169,9 @@ sysd_cfg_yaml_get_fru_info(fru_eeprom_t *fru_eeprom)
      * To have some sane values, use rand to generate
      * only the last 24 bits
      */
-    srand (time(NULL));
+    clock_gettime(CLOCK_MONOTONIC, &tp);
+    nsec_low = (unsigned int) (tp.tv_nsec & 0x00000000FFFFFFFF);
+    srand(nsec_low);
     fru_eeprom->base_mac_address[3] = rand() & 0xff;
     fru_eeprom->base_mac_address[4] = rand() & 0xff;
     fru_eeprom->base_mac_address[5] = rand() & 0xff;
