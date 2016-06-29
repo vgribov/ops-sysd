@@ -1,5 +1,5 @@
 /************************************************************************//**
- * (c) Copyright 2015 Hewlett Packard Enterprise Development LP
+ * (c) Copyright 2015-2016 Hewlett Packard Enterprise Development LP
  *
  *    Licensed under the Apache License, Version 2.0 (the "License"); you may
  *    not use this file except in compliance with the License. You may obtain
@@ -40,6 +40,7 @@
 #include <openvswitch/vlog.h>
 
 #include <ops-utils.h>
+#include <vrf-utils.h>
 #include <config-yaml.h>
 #include <yaml.h>
 #include "qos_init.h"
@@ -409,11 +410,18 @@ sysd_configure_default_vrf(struct ovsdb_idl_txn *txn,
                            struct ovsrec_system *ovs_row)
 {
     struct ovsrec_vrf *default_vrf_row = NULL;
+    struct smap smap_vrf_status;
     const int64_t table_id = 0;
+
     default_vrf_row = ovsrec_vrf_insert(txn);
     ovsrec_vrf_set_name(default_vrf_row, DEFAULT_VRF_NAME);
     ovsrec_system_set_vrfs(ovs_row, &default_vrf_row, 1);
     ovsrec_vrf_set_table_id(default_vrf_row, &table_id, sizeof(table_id));
+    smap_clone(&smap_vrf_status, &default_vrf_row->status);
+    smap_add_once(&smap_vrf_status, VRF_STATUS_KEY, VRF_STATUS_VALUE);
+
+    ovsrec_vrf_set_status(default_vrf_row, &smap_vrf_status);
+    smap_destroy(&smap_vrf_status);
 
 }/* sysd_configure_default_vrf */
 
