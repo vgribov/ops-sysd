@@ -71,6 +71,25 @@ dmidecode_exists(char *cmd_path)
     }
     return -1;
 } /* dmidecode_exists() */
+
+static char *
+strip_quotes(char *string)
+{
+    int len = 0;
+
+    if (!string) {
+        return string;
+    }
+
+    len = strlen(string);
+
+    if (string[0] ==  '"' && string[len - 1] == '"') {
+        string[len - 1] = '\0';
+        memmove(string, string + 1, len - 1);
+    }
+
+    return string;
+} /* strip_quotes() */
 #endif /* PLATFORM_SIMULATION */
 
 void
@@ -131,6 +150,8 @@ get_manuf_and_prodname(char *cmd_path, char **manufacturer, char **product_name)
         return;
     }
 
+    strip_quotes(*manufacturer);
+
     snprintf(dmid_cmd, sizeof(dmid_cmd), "%s -s %s",
              cmd_path, "system-product-name");
 
@@ -139,6 +160,9 @@ get_manuf_and_prodname(char *cmd_path, char **manufacturer, char **product_name)
         VLOG_ERR("Unable to get system product name.");
         return;
     }
+
+    strip_quotes(*product_name);
+
     return;
 
 } /* get_manuf_and_prodname() */
