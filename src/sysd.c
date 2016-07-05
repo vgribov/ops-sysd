@@ -409,6 +409,7 @@ sysd_exit(struct unixctl_conn *conn, int argc OVS_UNUSED,
 {
     bool *exiting = exiting_;
     *exiting = true;
+    sysd_cfg_yaml_set_system_status_led(0);
     free(subsystems);
     unixctl_command_reply(conn, NULL);
 
@@ -494,6 +495,11 @@ main(int argc, char *argv[])
         VLOG_ERR("Unable to enumerate interfaces in the system.");
         exit(-1);
     }
+
+    /* Set the system status LED to 'good' after successfully
+     * initializing the hardware descriptors.
+     */
+    sysd_cfg_yaml_set_system_status_led(1);
 
     while (!exiting) {
         sysd_run();

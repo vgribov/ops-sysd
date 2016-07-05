@@ -266,4 +266,16 @@ sysd_cfg_yaml_get_acl_info(void)
 {
     return yaml_get_acl_info(cfg_yaml_handle, BASE_SUBSYSTEM);
 }
+
+void
+sysd_cfg_yaml_set_system_status_led(int good)
+{
+    const YamlSystemLedInfo *system_led;
+    system_led = yaml_get_system_led_info(cfg_yaml_handle, BASE_SUBSYSTEM);
+    if (system_led && system_led->status_led) {
+        i2c_reg_write(cfg_yaml_handle, BASE_SUBSYSTEM, system_led->status_led,
+                      good ? system_led->status_led_settings.on :
+                             system_led->status_led_settings.flashing);
+    }
+}
 /** @} end of group sysd */

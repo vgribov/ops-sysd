@@ -73,5 +73,7 @@ int sysd_create_link_to_hwdesc_files(void);
 
 unsigned int calc_crc(unsigned char *buf, int len);
 
+extern void sysd_cfg_yaml_set_system_status_led(int good);
+
 /** @} end of group ops-sysd */
 #endif /* __SYSD_UTIL_H__ */
