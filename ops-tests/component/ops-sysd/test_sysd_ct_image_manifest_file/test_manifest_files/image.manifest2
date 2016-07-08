@@ -1,0 +1,25 @@
+{
+    "daemons": {
+        "ops-sysd": {
+            "is_hw_handler": true
+        },
+        "ops-pmd": {
+            "is_hw_handler": true
+        },
+        "ops-tempd": {
+             "is_hw_handler": true
+        },
+        "ops-ledd": {
+             "is_hw_handler": true
+        },
+        "ops-powerd": {
+             "is_hw_handler": true
+        },
+        "ops-fand": {
+            "is_hw_handler": true
+        }
+    },
+    "mgmt_intf": {
+        "intf": "mgmt1"
+    }
+}
