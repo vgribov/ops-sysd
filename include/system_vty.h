@@ -27,7 +27,17 @@
 #ifndef SYS_STR
 #define SYS_STR	         "System information\n"
 #endif
-#define CLOCK_STR  "Shows system clock information\n"
+#define DATE_STR  "Shows system date information\n"
+#define TIMEZONE_STR "Timezone information\n"
+#define TIMEZONE_SET_STR "Sets Timezone configuration\n"
+#define TIMEZONE_PLACEHOLDER_STR "Timezone Info\n"
+#define DEFAULT_TIMEZONE "utc"
+#define MAX_TIMEZONES          900
+#define MAX_TIMEZONE_NAME_SIZE 100
+#define MAX_TIMEZONE_CMD_SIZE  (MAX_TIMEZONES*MAX_TIMEZONE_NAME_SIZE)
+#define MAX_TIMEZONE_HELP_SIZE 100
+#define MAX_TIMEZONES_HELP_SIZE  (MAX_TIMEZONES*MAX_TIMEZONE_HELP_SIZE)
+
 typedef enum
 {
         CLI_FAN,
@@ -40,5 +50,11 @@ int cli_system_get_all();
 
 void cli_pre_init(void);
 void cli_post_init(void);
+
+static int zone_count = 0;
+static char base_path[100] = "/usr/share/zoneinfo/posix/";
+char list_of_zones[MAX_TIMEZONES][MAX_TIMEZONE_NAME_SIZE];
+char list_of_zones_caps[MAX_TIMEZONES][MAX_TIMEZONE_NAME_SIZE];
+void find_posix_timezones_and_add_to_list(const char *name, int level, char *cmd, char *help);
 
 #endif //_SYSTEM_VTY_H

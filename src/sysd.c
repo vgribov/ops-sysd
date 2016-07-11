@@ -268,6 +268,7 @@ sysd_ovsdb_conn_init(char *remote)
     ovsdb_idl_omit_alert(idl, &ovsrec_system_col_software_info);
     ovsdb_idl_add_column(idl, &ovsrec_system_col_switch_version);
     ovsdb_idl_omit_alert(idl, &ovsrec_system_col_switch_version);
+    ovsdb_idl_add_column(idl, &ovsrec_system_col_timezone);
 
     ovsdb_idl_add_table(idl, &ovsrec_table_subsystem);
     ovsdb_idl_add_column(idl, &ovsrec_subsystem_col_name);
@@ -300,6 +301,7 @@ sysd_ovsdb_conn_init(char *remote)
 
     /* Management Interface Column*/
     ovsdb_idl_add_column(idl, &ovsrec_system_col_mgmt_intf);
+    ovsdb_idl_add_column(idl, &ovsrec_system_col_mgmt_intf_status);
 
     /* Package_Info Table */
     ovsdb_idl_add_table(idl, &ovsrec_table_package_info);
@@ -496,7 +498,6 @@ main(int argc, char *argv[])
     while (!exiting) {
         sysd_run();
         unixctl_server_run(appctl);
-
         sysd_wait();
         unixctl_server_wait(appctl);
         if (idl_seqno != ovsdb_idl_get_seqno(idl)) {
@@ -508,7 +509,7 @@ main(int argc, char *argv[])
              * status and could cause the poll_block() below to wait
              * until the next DB transaction happened, if any at all..
              */
-            VLOG_DBG("IDL has changed. Continue to see what changed..");
+            VLOG_ERR("IDL has changed. Continue to see what changed..");
         } else if (exiting) {
             poll_immediate_wake();
         } else {

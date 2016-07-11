@@ -121,6 +121,7 @@
 #include "sysd_fru.h"
 
 #define DFLT_ASSET_TAG             "OpenSwitch asset tag"
+#define DFLT_TIMEZONE              "UTC"
 #define BASE_SUBSYSTEM             "base"
 #define SYSD_BASE_SUBSYSTEM        "base"
 
