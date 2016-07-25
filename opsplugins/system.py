@@ -33,7 +33,7 @@ def build_timezone_db():
             full_path = os.path.join(root, filename)
             timezone = copy(full_path)
             timezone = timezone.replace(path, "")
-            list_of_timezones[timezone.lower()] = full_path
+            list_of_timezones[timezone] = full_path
 
 
 def check_valid_timezone(timezone_user_input):
@@ -53,7 +53,7 @@ class SystemValidator(BaseValidator):
     def validate_modification(self, validation_args):
         system_row = validation_args.resource_row
         if hasattr(system_row, "timezone"):
-            timezone = get_column_data_from_row(system_row, "timezone")
+            timezone = get_column_data_from_row(system_row, "timezone")[0]
             if (check_valid_timezone(timezone) is False):
                 details = "Invalid timezone %s." % (timezone)
                 raise ValidationError(error.VERIFICATION_FAILED, details)
