@@ -222,6 +222,7 @@ def setup(request, topology):
     request.addfinalizer(cleanup)
 
 
+@pytest.mark.platform_incompatible(['ostl'])
 def test_sysd_ct_os_default_os_name(topology, step, main_setup, setup):
     ops1 = topology.get("ops1")
     assert ops1 is not None
@@ -229,6 +230,7 @@ def test_sysd_ct_os_default_os_name(topology, step, main_setup, setup):
     check_os_name(ops1, "os-release.default")
 
 
+@pytest.mark.platform_incompatible(['ostl'])
 def test_sysd_ct_os_default_version(topology, step, main_setup, setup):
     ops1 = topology.get("ops1")
     assert ops1 is not None
@@ -236,6 +238,7 @@ def test_sysd_ct_os_default_version(topology, step, main_setup, setup):
     check_switch_version(ops1, "os-release.default")
 
 
+@pytest.mark.platform_incompatible(['ostl'])
 def test_sysd_ct_os_1_0_0_version(topology, step, main_setup, setup):
     ops1 = topology.get("ops1")
     assert ops1 is not None
@@ -243,6 +246,7 @@ def test_sysd_ct_os_1_0_0_version(topology, step, main_setup, setup):
     check_switch_version(ops1, "os-release.ops-1.0.0")
 
 
+@pytest.mark.platform_incompatible(['ostl'])
 def test_sysd_ct_os_debian_8_0_name(topology, step, main_setup, setup):
     ops1 = topology.get("ops1")
     assert ops1 is not None
@@ -250,6 +254,7 @@ def test_sysd_ct_os_debian_8_0_name(topology, step, main_setup, setup):
     check_os_name(ops1, "os-release.debian-8.0")
 
 
+@pytest.mark.platform_incompatible(['ostl'])
 def test_sysd_ct_os_debian_8_0_version(topology, step, main_setup, setup):
     ops1 = topology.get("ops1")
     assert ops1 is not None

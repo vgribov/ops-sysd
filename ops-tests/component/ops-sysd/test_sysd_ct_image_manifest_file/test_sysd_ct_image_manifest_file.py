@@ -187,6 +187,7 @@ def setup(request, topology):
     request.addfinalizer(cleanup)
 
 
+@pytest.mark.platform_incompatible(['ostl'])
 def test_sysd_ct_image_change_hw_handler_to_false(topology, step, main_setup,
                                                   setup):
     ops1 = topology.get("ops1")
@@ -195,6 +196,7 @@ def test_sysd_ct_image_change_hw_handler_to_false(topology, step, main_setup,
     image_manifest_read(ops1, "image.manifest1")
 
 
+@pytest.mark.platform_incompatible(['ostl'])
 def test_sysd_ct_image_change_mgmt_intf_from_eth0_to_mgmt1(topology, step,
                                                            main_setup, setup):
     ops1 = topology.get("ops1")
@@ -203,6 +205,7 @@ def test_sysd_ct_image_change_mgmt_intf_from_eth0_to_mgmt1(topology, step,
     image_manifest_read(ops1, "image.manifest2")
 
 
+@pytest.mark.platform_incompatible(['ostl'])
 def test_sysd_ct_image_add_random_stuff(topology, step, main_setup, setup):
     ops1 = topology.get("ops1")
     assert ops1 is not None
