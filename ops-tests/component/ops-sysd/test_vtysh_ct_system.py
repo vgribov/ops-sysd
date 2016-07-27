@@ -120,3 +120,20 @@ def test_vtysh_ct_system(topology, step):  # noqa
         if "Temp_base" in line:
             counter += 1
     assert counter is 8
+    step("3-Test to verify show system timezone command")
+    output = sw1('show system timezone')
+    assert "System is configured for timezone : UTC" in output, \
+            "Could not display default system timezone\n"
+    output = sw1('show running-config')
+    assert "timezone set utc" in output, \
+            "Could not display default system timezone\n"
+    step("4-Test to verify timezone configuration for us/pacific")
+    sw1('configure terminal')
+    sw1('timezone set us/pacific')
+    sw1('exit')
+    output = sw1('show system timezone')
+    assert "System is configured for timezone : US/Pacific" in output, \
+            "Could not display configured system timezone us/pacific\n"
+    output = sw1('show running-config')
+    assert "timezone set us/pacific" in output, \
+            "Could not display configured system timezone us/pacific\n"
