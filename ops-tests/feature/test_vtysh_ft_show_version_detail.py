@@ -20,6 +20,8 @@
 OpenSwitch Test for sysd related configurations.
 """
 
+from pytest import mark
+
 TOPOLOGY = """
 # +-------+
 # |  ops1 |
@@ -30,6 +32,7 @@ TOPOLOGY = """
 """
 
 
+@mark.gate
 def test_vtysh_ft_show_version_detail(topology):
     ops1 = topology.get("ops1")
 

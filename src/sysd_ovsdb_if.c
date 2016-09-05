@@ -685,6 +685,50 @@ sysd_update_sw_info(const struct ovsrec_system *cfg)
 
 } /* sysd_update_sw_info */
 
+/*
+ * Function to handle timezone updates from OVSDB.System.timezone column
+ */
+static void
+sysd_handle_timezone_update(const struct ovsrec_system *cfg)
+{
+    const struct ovsdb_datum *data = NULL;
+    char *ovsdb_timezone = NULL;
+    char timezone_cmd[200];
+    char base_path[] = "/usr/share/zoneinfo/posix/";
+    int ret_val = 0;
+
+    cfg = ovsrec_system_first(idl);
+
+    if (cfg != NULL)
+    {
+        data = ovsrec_system_get_timezone(cfg, OVSDB_TYPE_STRING);
+        ovsdb_timezone = data->keys->string;
+        VLOG_ERR("1 sysd_handle_timezone_update : run \n");
+        if (ovsdb_timezone != NULL)
+        {
+          memset(&timezone_cmd[0], 0, sizeof(timezone_cmd));
+          strcpy(timezone_cmd, base_path);
+          strcat(timezone_cmd, ovsdb_timezone);
+          unlink("/etc/localtime");
+          ret_val = symlink(timezone_cmd, "/etc/localtime");
+          if (ret_val < 0) {
+            VLOG_ERR("Unable to create symbolic link for timezone %s err code %d\n",timezone_cmd, ret_val);
+            return;
+          }
+        }
+        else
+        {
+            VLOG_ERR("Timezone not configured\n");
+            return;
+        }
+    }
+    else
+    {
+        VLOG_ERR("Error retrieving Timezone info\n");
+        return;
+    }
+} /* sysd_handle_timezone_update */
+
 void
 sysd_initial_configure(struct ovsdb_idl_txn *txn)
 {
@@ -766,6 +810,7 @@ sysd_initial_configure(struct ovsdb_idl_txn *txn)
      * for the new config
      */
     sysd_update_sw_info(sys);
+    ovsrec_system_set_timezone(sys, DFLT_TIMEZONE);
 
     /* QoS init */
     qos_init_trust(txn, sys);
@@ -944,6 +989,7 @@ sysd_run(void)
         if (ovsrec_package_info_first(idl) == NULL) {
             sysd_add_package_info();
         }
+        sysd_handle_timezone_update(cfg);
     }
 
     /* Notify parent of startup completion. */

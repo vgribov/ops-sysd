@@ -1,2 +1,6 @@
 # Ignore the build directory. It created by yocto during compilation.
 build
+ops-tests/component/ops-sysd/__pycache__/
+ops-tests/component/ops-sysd/test_sysd_ct_hw_desc_files/__pycache__/
+ops-tests/component/ops-sysd/test_sysd_ct_image_manifest_file/__pycache__/
+ops-tests/component/ops-sysd/test_sysd_ct_os_release/__pycache__/

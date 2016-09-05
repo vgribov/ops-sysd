@@ -42,8 +42,8 @@ include_directories (${INCL_DIR}
 
 # CLI libraries source files
 set (SOURCES_CLI ${PROJECT_SOURCE_DIR}/system_vty.c
-    )
-
+                 ${PROJECT_SOURCE_DIR}/vtysh_ovsdb_system_context.c
+  )
 
 add_library (${LIBSYSDCLI} SHARED ${SOURCES_CLI})
 

@@ -26,6 +26,7 @@ from __future__ import print_function, division
 from time import sleep
 
 from platform_err_msgs import err_msgs
+from pytest import mark
 
 TOPOLOGY = """
 # +-----+   +------+   +-------+
@@ -166,6 +167,7 @@ def verify_ping(step):
     " between hosts failed"
 
 
+@mark.gate
 def test_ft_bootup(topology, step):
     ops1 = topology.get("ops1")
     hs1 = topology.get('hs1')

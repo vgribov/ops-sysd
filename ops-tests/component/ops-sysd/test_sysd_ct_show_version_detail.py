@@ -23,7 +23,10 @@ TOPOLOGY = """
 [type=openswitch name="Switch 1"] sw1
 """
 
+from pytest import mark
 
+
+@mark.gate
 def test_show_version_detail_sysd_ct(topology):
     sw1 = topology.get('sw1')
 

@@ -16,7 +16,7 @@
 ##########################################################################
 
 """
-OpenSwitch Test for switchd related configurations.
+OpenSwitch Test for sysd related configurations.
 """
 
 from pytest import mark
@@ -141,6 +141,7 @@ def wait_until_ovsdb_is_up(dut):
 
 
 @mark.skipif(True, reason="OVSDB error when trying to bring up sysd process")
+@mark.gate
 def test_sysd_ct_hw_desc_files(topology, step):
     ops1 = topology.get("ops1")
     assert ops1 is not None
