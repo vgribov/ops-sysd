@@ -39,8 +39,6 @@
 
 /***********************************************************/
 
-#define DMIDECODE_NAME "dmidecode"
-
 VLOG_DEFINE_THIS_MODULE(sysd_util);
 
 /** @ingroup sysd
@@ -49,29 +47,6 @@ VLOG_DEFINE_THIS_MODULE(sysd_util);
 struct json *manifest_info = NULL;
 
 #ifndef PLATFORM_SIMULATION
-static int
-dmidecode_exists(char *cmd_path)
-{
-    char          *paths[] = {"/usr/sbin", "/sbin",
-                              "/bin", "/usr/bin"};
-    static char   buf[50];
-    unsigned int  i = 0;
-    struct stat   sbuf;
-
-    /* Look for "dmidecode" command */
-    for (i = 0; i < sizeof(paths); i++) {
-        snprintf(buf, sizeof(buf), "%s/%s",
-                 paths[i], DMIDECODE_NAME);
-
-        if ((stat(buf, &sbuf) == 0) &&
-            (sbuf.st_mode & S_IXUSR)) {
-           strncpy(cmd_path, buf, sizeof(buf));
-           return 0;
-        }
-    }
-    return -1;
-} /* dmidecode_exists() */
-
 static char *
 strip_quotes(char *string)
 {
@@ -139,12 +114,7 @@ get_sys_cmd_out(char *cmd, char **output)
 static void
 get_manuf_and_prodname(char *cmd_path, char **manufacturer, char **product_name)
 {
-    char    dmid_cmd[256];
-
-    snprintf(dmid_cmd, sizeof(dmid_cmd), "%s -s %s",
-             cmd_path, "system-manufacturer");
-
-    get_sys_cmd_out(dmid_cmd, manufacturer);
+    get_sys_cmd_out(GET_MANUFACTURER_CMD, manufacturer);
     if (*manufacturer == NULL) {
         VLOG_ERR("Unable to get system manufacturer.");
         return;
@@ -152,10 +122,7 @@ get_manuf_and_prodname(char *cmd_path, char **manufacturer, char **product_name)
 
     strip_quotes(*manufacturer);
 
-    snprintf(dmid_cmd, sizeof(dmid_cmd), "%s -s %s",
-             cmd_path, "system-product-name");
-
-    get_sys_cmd_out(dmid_cmd, product_name);
+    get_sys_cmd_out(GET_PRODUCT_NAME_CMD, product_name);
     if (*product_name == NULL) {
         VLOG_ERR("Unable to get system product name.");
         return;
@@ -225,14 +192,6 @@ sysd_create_link_to_hwdesc_files(void)
     manufacturer = strdup(GENERIC_X86_MANUFACTURER);
     product_name = strdup(GENERIC_X86_PRODUCT_NAME);
 #else
-    /* OPS_TODO: Add other methods to find manuf/prodname.
-     * Run dmidecode command (if it exists) to get system info. */
-    rc = dmidecode_exists(cmd_path);
-    if (rc) {
-        VLOG_ERR("Unable to locate \"dmidecode\" command");
-        return -1;
-    }
-
     get_manuf_and_prodname(cmd_path, &manufacturer, &product_name);
     if ((manufacturer == NULL) || (product_name == NULL)) {
         return -1;

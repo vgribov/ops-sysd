@@ -30,6 +30,8 @@ set (SYSCONFDIR "/etc" CACHE STRING "Location of system configuration files")
 set (HWDESC_FILE_LINK_PATH ${SYSCONFDIR}/openswitch)
 set (HWDESC_FILE_LINK ${SYSCONFDIR}/openswitch/hwdesc)
 set (HWDESC_FILES_PATH ${SYSCONFDIR}/openswitch/platform)
+set (GET_MANUFACTURER_CMD "dmidecode -s system-manufacturer" CACHE STRING "manufacturer name command")
+set (GET_PRODUCT_NAME_CMD "dmidecode -s system-product-name" CACHE STRING "product name command")
 
 # Update the sysd.h with any compile time flags
 configure_file (${PROJECT_SOURCE_DIR}/${INCL_DIR}/sysd.h.in

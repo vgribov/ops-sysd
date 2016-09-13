@@ -45,6 +45,9 @@
 #define MAX_DAEMON_NAME_LEN     128
 #define MAX_MGMT_INTF_NAME_LEN     128
 
+#define GET_MANUFACTURER_CMD "@GET_MANUFACTURER_CMD@"
+#define GET_PRODUCT_NAME_CMD "@GET_PRODUCT_NAME_CMD@"
+
 typedef struct daemon_info {
     char                name[MAX_DAEMON_NAME_LEN];
     bool                is_hw_handler;
