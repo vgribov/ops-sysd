@@ -72,7 +72,8 @@ get_sys_cmd_out(char *cmd, char **output)
 {
     FILE        *fd = NULL;
     char        *buf = NULL;
-    size_t      nbytes = 0, size = 0;
+    ssize_t     nbytes = 0;
+    size_t      size = 0;
 
     *output = NULL;
 
